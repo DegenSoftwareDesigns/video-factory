@@ -1,0 +1,203 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>EMBER — Brand field guide</title>
+  <style>
+    :root {
+      --paper: #FFF4DE; --ink: #173D30; --primary: #F65335; --sun: #FFD166;
+      --mint: #A6DDBB; --muted: #50675A; --line: #D8D7BE;
+      --display: "Arial Black", Arial, sans-serif;
+      --body: Arial, Helvetica, sans-serif; --label: Consolas, Monaco, monospace;
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: auto; }
+    body { margin: 0; color: var(--ink); background: var(--paper); font-family: var(--body); }
+    a { color: inherit; text-underline-offset: 5px; }
+    a:hover { text-decoration-thickness: 2px; }
+    a:focus-visible { outline: 3px solid var(--ink); outline-offset: 6px; }
+    .wrap { width: min(1248px, calc(100% - 96px)); margin: auto; }
+    .label { font: 12px/1.5 var(--label); letter-spacing: .08em; text-transform: uppercase; }
+    header { padding: 28px 0 22px; border-bottom: 1px solid var(--line); }
+    header .wrap { display: flex; align-items: center; justify-content: space-between; gap: 24px; }
+    header img { width: 178px; height: auto; display: block; }
+    nav { display: flex; gap: 28px; }
+    nav a { text-decoration: none; }
+    nav a:hover { text-decoration: underline; }
+    .hero { padding: 64px 0 36px; }
+    .hero-grid { display: grid; grid-template-columns: 1.1fr 1fr; align-items: center; gap: 32px; }
+    .eyebrow { display: flex; gap: 12px; align-items: center; }
+    .eyebrow::before { content: ""; width: 9px; height: 9px; border-radius: 50%; background: var(--primary); }
+    h1 { font: 900 clamp(56px, 7.4vw, 108px)/.98 var(--display); letter-spacing: -.07em; max-width: 9ch; margin: 28px 0; }
+    .intro { font-size: 18px; line-height: 1.6; max-width: 37ch; margin: 0; color: var(--muted); }
+    .hero-art { position: relative; display: grid; place-items: center; min-height: 440px; }
+    .hero-art::before { content: ""; position: absolute; width: 96%; aspect-ratio: 1; border-radius: 50%; background: var(--sun); }
+    .hero-art img { position: relative; width: min(100%, 410px); transform: rotate(-8deg); }
+    .hero-art .tag { position: absolute; bottom: 14px; right: 8px; padding: 12px 16px; border: 1px solid var(--ink); border-radius: 50%; background: var(--paper); transform: rotate(-8deg); text-align: center; }
+    .hero-meta { border-top: 1px solid var(--line); padding-top: 20px; margin-top: 40px; display: flex; justify-content: space-between; gap: 20px; }
+    section { padding: 48px 0; border-bottom: 1px solid var(--line); }
+    .section-heading { display: flex; gap: 24px; justify-content: space-between; align-items: baseline; margin-bottom: 28px; }
+    h2 { font: 900 clamp(28px, 3vw, 40px)/1.1 var(--display); letter-spacing: -.045em; margin: 0; }
+    .section-heading p { color: var(--muted); max-width: 44ch; line-height: 1.5; margin: 0; font-size: 14px; }
+    .identity-grid { display: grid; grid-template-columns: 1.3fr 1fr; gap: 32px; }
+    .lockup { display: grid; place-items: center; background: var(--mint); min-height: 180px; border-radius: 16px; padding: 32px; }
+    .lockup img { width: min(100%, 440px); }
+    .type-sample { border-top: 2px solid var(--ink); padding-top: 16px; }
+    .type-sample h3 { font: 900 40px/1.05 var(--display); letter-spacing: -.045em; margin: 20px 0; }
+    .type-sample p { font-size: 15px; color: var(--muted); line-height: 1.6; }
+    .palette { display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px; margin-top: 32px; }
+    .swatch .chip { height: 76px; border: 1px solid var(--line); border-radius: 8px; }
+    .swatch p { margin: 10px 0 0; font: 12px/1.5 var(--label); }
+    .swatch small { display: block; color: var(--muted); }
+    .sheet { margin: 0 0 28px; }
+    .sheet img { width: 100%; height: auto; display: block; border: 1px solid var(--line); border-radius: 12px; }
+    .sheet figcaption { display: flex; justify-content: space-between; gap: 16px; margin-top: 10px; color: var(--muted); font-size: 13px; line-height: 1.6; }
+    .example-grid { display: grid; grid-template-columns: .9fr 1.1fr; gap: 64px; align-items: center; }
+    .poster { position: relative; aspect-ratio: 3/4; width: min(100%, 360px); background: var(--ink); color: var(--paper); padding: 28px; overflow: hidden; border-radius: 8px; }
+    .poster::before { content: ""; position: absolute; width: 105%; aspect-ratio: 1; border-radius: 50%; background: var(--sun); left: 28%; top: 38%; }
+    .poster h3 { position: relative; font: 900 44px/.98 var(--display); letter-spacing: -.055em; max-width: 9ch; margin-top: 32px; }
+    .poster img { position: absolute; width: 76%; right: -4%; bottom: 8%; transform: rotate(8deg); }
+    .poster .chapters { position: absolute; inset: auto 28px 24px; display: flex; gap: 6px; }
+    .chapters i { display: block; flex: 1; height: 4px; background: var(--muted); }
+    .chapters i:first-child { background: var(--sun); }
+    .chapters i:nth-child(2) { background: linear-gradient(90deg, var(--sun) 50%, var(--muted) 50%); }
+    .rules h3 { font: 900 28px/1.2 var(--display); letter-spacing: -.03em; }
+    .rules p, .rules li { line-height: 1.65; color: var(--muted); }
+    .rules ol { padding-left: 22px; }
+    .rules li { margin: 12px 0; padding-left: 6px; }
+    code { font: .9em var(--label); color: var(--ink); overflow-wrap: anywhere; }
+    .adapt { display: grid; grid-template-columns: 1fr 1fr; gap: 48px; }
+    .adapt p { font-size: 16px; line-height: 1.65; color: var(--muted); margin-top: 0; }
+    footer { padding: 28px 0 40px; }
+    footer .wrap { display: flex; justify-content: space-between; gap: 24px; }
+    #error { background: var(--sun); padding: 16px; margin: 24px auto; }
+    @media (max-width: 900px) {
+      .wrap { width: calc(100% - 48px); }
+      .hero { padding-top: 40px; }
+      .hero-art { min-height: 340px; }
+      .hero-art img { width: 310px; }
+      .hero-art .tag { bottom: 0; right: 0; }
+      .example-grid { gap: 32px; }
+    }
+    @media (max-width: 600px) {
+      .wrap { width: calc(100% - 36px); }
+      header { padding: 18px 0; }
+      header img { width: 132px; }
+      nav { gap: 14px; }
+      nav a { font-size: 10px; }
+      nav a:last-child { display: none; }
+      .hero-grid, .identity-grid, .example-grid, .adapt { grid-template-columns: 1fr; }
+      .hero-grid { gap: 24px; }
+      h1 { font-size: 64px; max-width: 10ch; }
+      .hero-art { min-height: 310px; width: min(100%, 340px); margin: auto; }
+      .hero-art img { width: 290px; }
+      .hero-meta, .section-heading { flex-direction: column; gap: 12px; }
+      .hero-meta { margin-top: 28px; }
+      .section-heading { align-items: start; }
+      .palette { grid-template-columns: repeat(3, 1fr); gap: 20px 12px; }
+      .swatch .chip { height: 60px; }
+      .sheet figcaption { flex-direction: column; gap: 0; }
+      .poster { margin: auto; }
+      .adapt { gap: 20px; }
+      footer .wrap { flex-direction: column; gap: 12px; }
+    }
+  </style>
+</head>
+<body>
+  <div id="error" class="wrap" hidden role="status"></div>
+  <header>
+    <div class="wrap">
+      <a href="#top" aria-label="Back to the brand overview"><img src="assets/logo.svg" alt="Brand logo"></a>
+      <nav class="label" aria-label="Brand board sections">
+        <a href="#identity">Identity</a><a href="#sheets">Character</a><a href="#adapt">Make it yours ↗</a>
+      </nav>
+    </div>
+  </header>
+  <main id="top" class="wrap">
+    <div class="hero">
+      <div class="hero-grid">
+        <div>
+          <div class="eyebrow label">The reusable brand kit / 01</div>
+          <h1 id="tagline">Small spark. Big energy.</h1>
+          <p class="intro" id="support">A little character. A shared identity. Room for the next story.</p>
+        </div>
+        <div class="hero-art">
+          <img src="assets/mascot.svg" id="hero-mascot" alt="Pip, a smiling coral-orange spark with a yellow face">
+          <div class="tag label">Meet <span data-mascot>Pip</span><br>Your little spark</div>
+        </div>
+      </div>
+      <div class="hero-meta label"><span>Fictional identity / editable example</span><span>Original SVG assets · system fonts · no external requests</span></div>
+    </div>
+
+    <section id="identity">
+      <div class="section-heading"><h2>01 / The identity</h2><p>A small set of repeatable decisions. Use the same palette, voice, type, and silhouette in every production.</p></div>
+      <div class="identity-grid">
+        <div class="lockup"><img src="assets/logo.svg" alt="Horizontal brand logo on a mint background"></div>
+        <div class="type-sample"><span class="label">Heavy type. Light touch.</span><h3>Make a<br>little noise.</h3><p>Big, short messages. Clear supporting copy.<br>A warm character with room to breathe.</p></div>
+      </div>
+      <div class="palette" id="palette" aria-label="Brand colour palette"></div>
+    </section>
+
+    <section id="sheets">
+      <div class="section-heading"><h2>02 / One character. Every angle.</h2><p>Use the approved view, expression, and pose as a reference input. Keep the character's defining details intact.</p></div>
+      <figure class="sheet"><img src="assets/turnaround.svg" alt="Mascot reference sheet: front, three-quarter, side, and back"><figcaption><span>Turnaround / silhouette, orientation, and identifying details</span><a href="assets/turnaround.svg">Open SVG ↗</a></figcaption></figure>
+      <figure class="sheet"><img src="assets/expressions.svg" alt="Mascot reference sheet: neutral, happy, focused, and surprised"><figcaption><span>Expressions / the same character with a different emotion</span><a href="assets/expressions.svg">Open SVG ↗</a></figcaption></figure>
+      <figure class="sheet"><img src="assets/poses.svg" alt="Mascot reference sheet: standing, waving, and running"><figcaption><span>Poses / actions change; anatomy stays recognizable</span><a href="assets/poses.svg">Open SVG ↗</a></figcaption></figure>
+    </section>
+
+    <section>
+      <div class="section-heading"><h2>03 / From kit to frame</h2><p>A static 3:4 composition study. This is a visual reference, not a playable video or finished campaign.</p></div>
+      <div class="example-grid">
+        <article class="poster" aria-label="Static social frame example">
+          <span class="label"><span data-brand>EMBER</span> / FIELD NOTES</span>
+          <h3 id="headline">Keep the spark alive.</h3>
+          <img src="assets/mascot.svg" alt="Mascot as the visual anchor of a social frame">
+          <div class="chapters" aria-label="Three-segment narrative progress motif"><i></i><i></i><i></i></div>
+        </article>
+        <div class="rules">
+          <h3>Build the kit once.<br>Tell a different story each time.</h3>
+          <ol><li>Start from <code>design.md</code> and the real, approved assets.</li><li>Set the campaign's message, format, audience, and music in its own brief.</li><li>Choose the recording before final shot timings and animation.</li><li>Use <code>frame.md</code> to carry the identity into the edit.</li></ol>
+          <p>Brand identity stays reusable. Campaign decisions and generated footage belong to the individual production.</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="adapt" class="adapt">
+      <h2>Your brand.<br>A familiar starting point.</h2>
+      <div><p>Copy this kit into <code>brands/my-brand/</code>, change <code>brand.json</code> and the two guides, replace the mascot and logo artwork, then rebuild the assets.</p><p>Colours and labels update from configuration. A new character still needs its own approved artwork and reference sheets.</p><a class="label" href="README.md">Read the adaptation guide ↗</a></div>
+    </section>
+  </main>
+  <footer><div class="wrap label"><span><span data-brand>EMBER</span> / a video-factory example</span><a href="CREDITS.md">Asset provenance ↗</a></div></footer>
+  <script>
+    async function loadBrand() {
+      try {
+        const response = await fetch('brand.json');
+        if (!response.ok) throw new Error('Unable to load brand.json');
+        const brand = await response.json();
+        for (const [name, value] of Object.entries(brand.palette)) document.documentElement.style.setProperty(`--${name}`, value);
+        for (const [name, value] of Object.entries(brand.typography)) document.documentElement.style.setProperty(`--${name}`, value);
+        document.title = `${brand.name} — Brand field guide`;
+        document.getElementById('tagline').textContent = brand.tagline;
+        document.getElementById('support').textContent = brand.preview.support;
+        document.getElementById('headline').textContent = brand.preview.headline;
+        document.getElementById('hero-mascot').alt = `${brand.mascot_name}, the approved brand mascot`;
+        document.querySelectorAll('[data-brand]').forEach(node => node.textContent = brand.name);
+        document.querySelectorAll('[data-mascot]').forEach(node => node.textContent = brand.mascot_name);
+        for (const name of ['paper', 'ink', 'primary', 'sun', 'mint']) {
+          const swatch = document.createElement('div'); swatch.className = 'swatch';
+          const chip = document.createElement('div'); chip.className = 'chip'; chip.style.backgroundColor = brand.palette[name];
+          const label = document.createElement('p'); label.textContent = name.toUpperCase();
+          const hex = document.createElement('small'); hex.textContent = brand.palette[name]; label.appendChild(hex);
+          swatch.append(chip, label); document.getElementById('palette').appendChild(swatch);
+        }
+      } catch (error) {
+        const status = document.getElementById('error'); status.hidden = false;
+        status.textContent = 'Start the local HTTP server described in README.md so this board can read brand.json.';
+        console.error(error);
+      }
+    }
+    loadBrand();
+  </script>
+</body>
+</html>

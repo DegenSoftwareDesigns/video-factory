@@ -1,0 +1,38 @@
+# Local productions and brand workspaces (keep lightweight shared samples in examples/).
+/videos/
+/videos.csv
+/downloads/
+/marca-army/
+/marca-oscar-twitter/
+/brands/
+
+# Rebuilt dependencies. The project's own storyboard skill is versioned.
+/vendor/
+/.claude/skills/*
+!/.claude/skills/storyboard/
+/.agents/skills/
+/.venv/
+node_modules/
+__pycache__/
+*.py[cod]
+.cache/
+.media/
+.pytest_cache/
+
+# Credentials and machine-specific agent settings.
+.env
+.env.*
+!.env.example
+*.local.json
+/.claude/launch.json
+/.codex/
+*.pem
+*.key
+
+# Generated output, including inside future examples.
+renders/
+outputs/
+*.log
+*.tmp
+.DS_Store
+Thumbs.db

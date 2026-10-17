@@ -1,0 +1,25 @@
+{
+  "name": "EMBER",
+  "kind": "Fictional community / memecoin brand",
+  "tagline": "Small spark. Big energy.",
+  "mascot_name": "Pip",
+  "palette": {
+    "paper": "#FFF4DE",
+    "ink": "#173D30",
+    "primary": "#F65335",
+    "sun": "#FFD166",
+    "mint": "#A6DDBB",
+    "muted": "#50675A",
+    "line": "#D8D7BE"
+  },
+  "typography": {
+    "display": "Arial Black, Arial, sans-serif",
+    "body": "Arial, Helvetica, sans-serif",
+    "label": "Consolas, Monaco, monospace"
+  },
+  "preview": {
+    "headline": "Keep the spark alive.",
+    "support": "A little character. A shared identity. Room for the next story.",
+    "chapter_labels": ["The spark", "The crew", "What's next"]
+  }
+}

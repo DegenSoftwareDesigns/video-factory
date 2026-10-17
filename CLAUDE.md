@@ -1,0 +1,3 @@
+# video-factory
+
+@AGENTS.md

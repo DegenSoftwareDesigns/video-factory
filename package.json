@@ -1,0 +1,14 @@
+{
+  "name": "video-factory",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Shared video workshop: storyboards, music planning and HyperFrames production",
+  "engines": {"node": ">=22"},
+  "scripts": {
+    "hf": "hyperframes",
+    "doctor": "python scripts/doctor.py",
+    "skills:status": "python scripts/skills.py status",
+    "test": "python -m unittest discover -s tests -v"
+  },
+  "devDependencies": {"hyperframes": "0.8.166"}
+}

@@ -1,0 +1,72 @@
+{
+  "schema_version": 1,
+  "sources": [
+    {
+      "id": "hyperframes",
+      "repository": "https://github.com/heygen-com/hyperframes.git",
+      "commit": "76222e41d7760f94426484ceb9f76d0007813fcc",
+      "license": "Apache-2.0",
+      "skills": [
+        {"name": "hyperframes", "path": "skills/hyperframes", "tree_sha256": "daffe830e1a8566bf19c6e91fe09cd26a1cc0919a184be3e78a7b0e2a7149bba"},
+        {"name": "hyperframes-animation", "path": "skills/hyperframes-animation", "tree_sha256": "e714ffc0d78c0982d9fa75b9161699013311909d1a07a5fef649c70f3c3f7e33"},
+        {"name": "hyperframes-audio", "path": "skills/hyperframes-audio", "tree_sha256": "b2efa26282e79a7506e5cdc04b2d1051c41bd0bf876e27036518aa0f0dca10f8"},
+        {"name": "hyperframes-cli", "path": "skills/hyperframes-cli", "tree_sha256": "fc23a87c87572e995e64b92b4c30b882926a5006e15f84d8b08e8560a1f53474"},
+        {"name": "hyperframes-core", "path": "skills/hyperframes-core", "tree_sha256": "24231d50e64af8393f43232e272836015b12bf77aa1c79db16078968e9c62a11"},
+        {"name": "hyperframes-creative", "path": "skills/hyperframes-creative", "tree_sha256": "02616b41c2b3d1b21c228a8d81ebb47de5eb0849d2fe27b9de2c4ebaa90b8bf5"},
+        {"name": "hyperframes-keyframes", "path": "skills/hyperframes-keyframes", "tree_sha256": "7aa30eafc9dcac0ef684390df34182728d6067cfdca15188807c802342a8d70c"},
+        {"name": "hyperframes-registry", "path": "skills/hyperframes-registry", "tree_sha256": "d830f60ed9fa64926a63120a5a50a0202837ba94eca9d07ad2d7adbe5dc0e888"},
+        {"name": "hyperframes-studio", "path": "skills/hyperframes-studio", "tree_sha256": "4861b7cf88b67fbdceb5e8c516146c93cb091b106f828285f06d03f046a70036"},
+        {"name": "media-use", "path": "skills/media-use", "tree_sha256": "991cba4450fcf35ab11e6b6a55e480388c2996133ec6402123bf8609d8888721"},
+        {"name": "embedded-captions", "path": "skills/embedded-captions", "tree_sha256": "7b31104073c1b804c741635d8b8ff2a9b0db3015f4231e014307d183d4b8270f"},
+        {"name": "talking-head-recut", "path": "skills/talking-head-recut", "tree_sha256": "ef987682ee8d47c2e456ad5945c06c079ded822c05aa923e0ce82d9ae946b71a"},
+        {"name": "general-video", "path": "skills/general-video", "tree_sha256": "11c73900cba5e016a21d6487bdf244b487cb5e244722933acbf3bd7f333c45f9"},
+        {"name": "faceless-explainer", "path": "skills/faceless-explainer", "tree_sha256": "7ab5793b689aceb50a451b90f3ca61dacfca1bf2a287879801af0daeb418d7d2"},
+        {"name": "motion-graphics", "path": "skills/motion-graphics", "tree_sha256": "dad186bd166138e685d5199e96ff3d2b8439d2ee88f8aeff43681e2398bd7f5f"},
+        {"name": "music-to-video", "path": "skills/music-to-video", "tree_sha256": "079e11c1330d7ed119fc9ba1914f0ab9c54e37767170e4fc06249feaa5890121"},
+        {"name": "slideshow", "path": "skills/slideshow", "tree_sha256": "81baf395b5fe453daf22037d4d3c61111adcc96e91091a7bd83b2149be74a2c8"}
+      ]
+    },
+    {
+      "id": "claude-video",
+      "repository": "https://github.com/bradautomates/claude-video.git",
+      "commit": "03ceb42f7fa2c4439aca01752118044baabffb8f",
+      "license": "MIT",
+      "skills": [{"name": "watch", "path": "skills/watch", "tree_sha256": "d38e98329bc7266613a0bc907f709fca10881ec9da0a8c9ac4762165e410f8b6"}]
+    },
+    {
+      "id": "clipify",
+      "repository": "https://github.com/louisedesadeleer/clipify.git",
+      "commit": "5f6b75e6c0bfdce3cc9c78b850a67e23d65d9783",
+      "license": "MIT",
+      "skills": [{"name": "clipify", "path": ".", "exclude": [".gitignore", "README.md", "assets"], "tree_sha256": "8a8016feccf8e576194e7409cd10f46553a1264a59d5a93efc9678b5b1fb4093"}]
+    },
+    {
+      "id": "kling-ai-prompt-generator",
+      "repository": "https://github.com/maciejdzierzek/kling-ai-prompt-generator.git",
+      "commit": "248b9a275fedd511a1f0d9c32dc42a233ffb6357",
+      "license": "MIT",
+      "skills": [{"name": "kling-ai", "path": "skills/kling-ai", "tree_sha256": "3a443435817faca885aee00c74d11575a2e3063f74957512115ff75c523336c0"}]
+    },
+    {
+      "id": "motion-graphics",
+      "repository": "https://github.com/Barty-Bart/motion-graphics.git",
+      "commit": "3d83d987d658601d8a1269eb691622bdcd427335",
+      "license": "MIT",
+      "skills": [
+        {"name": "explainer-default", "path": "skills/explainer-default", "tree_sha256": "bf9921940d080f839ef2515c72f02032c882b08fd268d3bb2c2b2a679ea614b0"},
+        {"name": "explainer-engaging", "path": "skills/explainer-engaging", "tree_sha256": "ff6b3f62e96c41706d5b50f3f5685d572adac6e4bba8e4e2f7989b5dd9d20af5"},
+        {"name": "explainer-high-energy", "path": "skills/explainer-high-energy", "tree_sha256": "db803a4f1342fb95c556745942bebb26830c67277b1b46216660cfd377d61f63"},
+        {"name": "motion-broll", "path": "skills/motion-broll", "tree_sha256": "75776efe2825330f9b1523909f61ca850fafee7c06c21aa6882624ce52eb5dd4"},
+        {"name": "object-separation", "path": "skills/object-separation", "tree_sha256": "d76aa152a9b42398f970c0f3122762a7189d8a233a50dd303af7ddedbad99b1b"},
+        {"name": "sound-effects", "path": "skills/sound-effects", "tree_sha256": "dc602d96ab65e38cf66a40f88564591ada8a88887c5aa1e05de75d0c03ccb925"}
+      ]
+    },
+    {
+      "id": "video-use",
+      "repository": "https://github.com/browser-use/video-use.git",
+      "commit": "43cfc566833548093455c9d4a46bd69913b7e552",
+      "license": "MIT",
+      "skills": [{"name": "video-use", "path": ".", "exclude": ["tests"], "tree_sha256": "6744d02946518cecdbe1c67c104693c8e686b562e95f64df30cd5d1d6539fa7f"}]
+    }
+  ]
+}

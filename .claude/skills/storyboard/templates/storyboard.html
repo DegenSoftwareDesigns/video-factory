@@ -1,0 +1,311 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Storyboard</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #f6f5f2; --surface: #ffffff; --surface-2: #efede8; --line: #dedbd3;
+    --text: #1b1a17; --muted: #6b675e; --accent: #c2410c; --accent-soft: #fde7da;
+    --ok: #15803d; --ok-soft: #dcfce7; --warn: #b45309; --warn-soft: #fef3c7;
+    --frame: #0d0d0c; --radius: 14px;
+    --font: "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
+    --display: "Bebas Neue", "Oswald", "Arial Narrow", sans-serif;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #0f0f0e; --surface: #181816; --surface-2: #22211e; --line: #2f2d29;
+      --text: #f1efe9; --muted: #a29d92; --accent: #fb923c; --accent-soft: #3a2415;
+      --ok: #4ade80; --ok-soft: #14301f; --warn: #fbbf24; --warn-soft: #36290d;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #0f0f0e; --surface: #181816; --surface-2: #22211e; --line: #2f2d29;
+    --text: #f1efe9; --muted: #a29d92; --accent: #fb923c; --accent-soft: #3a2415;
+    --ok: #4ade80; --ok-soft: #14301f; --warn: #fbbf24; --warn-soft: #36290d;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--text); font: 15px/1.55 var(--font); }
+  a { color: var(--accent); }
+  .wrap { max-width: 1180px; margin: 0 auto; padding: 32px 16px 80px; }
+
+  header { display: flex; flex-wrap: wrap; gap: 16px 32px; align-items: end; justify-content: space-between; }
+  .eyebrow { font-size: 12px; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); }
+  h1 { font: 400 clamp(40px, 7vw, 72px)/0.95 var(--display); letter-spacing: .01em; margin: 6px 0 0; }
+  .meta { display: flex; flex-wrap: wrap; gap: 8px; }
+  .pill { border: 1px solid var(--line); border-radius: 999px; padding: 3px 10px; font-size: 13px; color: var(--muted); background: var(--surface); }
+
+  .phases { display: flex; gap: 6px; margin: 28px 0 24px; }
+  .phase { flex: 1; min-width: 0; border-top: 3px solid var(--line); padding-top: 8px; font-size: 12px; color: var(--muted); overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+  .phase b { display: block; font-size: 13px; color: inherit; overflow: hidden; text-overflow: ellipsis; }
+  .phase > span { display: block; overflow: hidden; text-overflow: ellipsis; }
+  .phase.done { border-color: var(--muted); }
+  .phase.now { border-color: var(--accent); color: var(--text); }
+  /* Narrow screens: only the current phase keeps its name. */
+  @media (max-width: 640px) {
+    .phase > span { display: none; }
+    .phase:not(.now) b .t { display: none; }
+    .phase.now { flex: 4; }
+  }
+
+  .brief { display: grid; grid-template-columns: 1.3fr 1fr; gap: 16px; }
+  @media (max-width: 820px) { .brief { grid-template-columns: 1fr; } }
+  .card { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 18px 20px; }
+  .card h2 { font-size: 12px; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); margin: 0 0 8px; font-weight: 600; }
+  .card p { margin: 0; }
+
+  /* Animatic */
+  .animatic { margin: 28px 0 8px; display: grid; grid-template-columns: minmax(0, 1fr) 280px; gap: 16px; align-items: start; }
+  @media (max-width: 820px) { .animatic { grid-template-columns: 1fr; } }
+  .screen { position: relative; background: var(--frame); border-radius: var(--radius); overflow: hidden; margin: 0 auto; width: 100%; }
+  .screen video, .screen img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+  .screen .label { position: absolute; left: 14px; bottom: 12px; right: 14px; color: #fff; text-shadow: 0 1px 8px rgba(0,0,0,.7); }
+  .screen .label b { font: 400 30px/1 var(--display); letter-spacing: .02em; display: block; }
+  .screen .label small { opacity: .85; }
+  .screen .src { position: absolute; top: 10px; right: 10px; background: rgba(0,0,0,.55); color: #fff; font-size: 11px; padding: 3px 8px; border-radius: 999px; }
+  .bar { display: flex; gap: 3px; margin-top: 10px; }
+  .bar button { flex: var(--d, 1); height: 8px; border: 0; border-radius: 4px; background: var(--line); cursor: pointer; padding: 0; position: relative; overflow: hidden; }
+  .bar button.on { background: var(--accent-soft); }
+  .bar button i { position: absolute; inset: 0 auto 0 0; width: 0; background: var(--accent); }
+  .controls { display: flex; gap: 8px; margin-top: 12px; flex-wrap: wrap; }
+  .btn { border: 1px solid var(--line); background: var(--surface); color: var(--text); border-radius: 10px; padding: 7px 14px; font: inherit; font-size: 14px; cursor: pointer; transition: background-color .15s; }
+  .btn:hover { background: var(--surface-2); }
+  .btn.primary { background: var(--accent); border-color: var(--accent); color: #fff; }
+  .side h2 { margin-top: 0; }
+  .side ol { margin: 0; padding-left: 20px; }
+  .side li { margin: 2px 0; cursor: pointer; }
+  .side li.on { color: var(--accent); font-weight: 600; }
+  .side .seg { color: var(--muted); font-size: 13px; }
+
+  /* Shot list */
+  .shots { display: flex; flex-direction: column; gap: 0; margin-top: 28px; }
+  .shot { display: grid; grid-template-columns: 64px minmax(0, 1fr); gap: 16px; }
+  .num { font: 400 54px/1 var(--display); color: var(--accent); text-align: right; padding-top: 14px; }
+  .shot .card { display: grid; grid-template-columns: var(--cols, 1fr) minmax(220px, 1fr); gap: 20px; }
+  @media (max-width: 900px) { .shot .card { grid-template-columns: 1fr; } .shot { grid-template-columns: 40px minmax(0,1fr); gap: 10px; } .num { font-size: 40px; } }
+  .media { display: grid; grid-template-columns: repeat(var(--n, 1), minmax(0, 1fr)); gap: 10px; }
+  @media (max-width: 560px) { .media { grid-template-columns: 1fr; } }
+  figure { margin: 0; }
+  figure .box { position: relative; background: var(--frame); border-radius: 10px; overflow: hidden; }
+  figure .box video, figure .box img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+  figcaption { font-size: 12px; color: var(--muted); margin-top: 5px; }
+  .tech { display: flex; flex-wrap: wrap; gap: 8px; align-items: baseline; }
+  .tech a.name { font-weight: 700; font-size: 18px; color: var(--text); text-decoration: none; border-bottom: 2px solid var(--accent); }
+  .tech .cat { font-size: 12px; color: var(--muted); }
+  .badge { font-size: 12px; font-weight: 600; padding: 2px 9px; border-radius: 999px; background: var(--surface-2); color: var(--muted); }
+  .badge.aprobado { background: var(--ok-soft); color: var(--ok); }
+  .badge.cambiar { background: var(--warn-soft); color: var(--warn); }
+  dl { margin: 12px 0 0; display: grid; grid-template-columns: auto 1fr; gap: 6px 12px; font-size: 14px; }
+  dt { color: var(--muted); }
+  dd { margin: 0; }
+  .alts { margin-top: 14px; }
+  .alts h3 { font-size: 12px; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); margin: 0 0 6px; font-weight: 600; }
+  .alt { display: flex; gap: 10px; align-items: center; width: 100%; text-align: left; border: 1px solid var(--line); background: var(--surface-2); color: var(--text); border-radius: 10px; padding: 6px; margin-top: 6px; cursor: pointer; font: inherit; font-size: 13px; }
+  .alt:hover, .alt.on { border-color: var(--accent); }
+  .alt img { width: 64px; height: 40px; object-fit: cover; border-radius: 6px; background: var(--frame); flex: none; }
+  .link { display: flex; align-items: center; gap: 10px; margin-left: 64px; padding: 8px 0 8px 18px; color: var(--muted); font-size: 13px; }
+  .link::before { content: ""; width: 2px; height: 26px; background: var(--line); }
+  @media (max-width: 900px) { .link { margin-left: 40px; } }
+  .notes { margin-top: 28px; }
+  .empty { padding: 60px 20px; text-align: center; color: var(--muted); }
+  footer { margin-top: 40px; font-size: 13px; color: var(--muted); }
+</style>
+</head>
+<body>
+<div class="wrap" id="app"><div class="empty">Cargando storyboard…</div></div>
+
+<!-- Data lives next to this file. Regenerated by Claude at each phase. -->
+<script src="storyboard.data.js"></script>
+<script>
+(function () {
+  const PHASES = [
+    ["Idea", "lo que he entendido"],
+    ["Planos", "propuesta de secuencia"],
+    ["Storyboard", "revisión visual"],
+    ["Imágenes", "fotogramas clave"],
+    ["Animación", "clips por plano"],
+    ["Montaje", "vídeo final"],
+  ];
+  const app = document.getElementById("app");
+  const sb = window.STORYBOARD;
+  if (!sb) {
+    app.innerHTML = '<div class="empty">No se encontró <code>storyboard.data.js</code> junto a este archivo.</div>';
+    return;
+  }
+
+  const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+  const ratio = (sb.format || "16:9").split(":").map(Number);
+  const aspect = `${ratio[0]} / ${ratio[1]}`;
+  const vertical = ratio[1] > ratio[0];
+  const shots = sb.shots || [];
+  const secs = (d) => parseFloat(d) || 3;
+
+  // What the animatic shows for a shot: the newest thing that exists.
+  function bestMedia(shot) {
+    if (shot.clip) return { type: "video", src: shot.clip, poster: shot.keyframe, label: shot.clip_label || "Clip generado" };
+    if (shot.keyframe) return { type: "image", src: shot.keyframe, label: "Imagen clave" };
+    const t = shot.technique || {};
+    return { type: "video", src: t.preview, poster: t.still, label: "Referencia Melies" };
+  }
+
+  function mediaEl(m, cls = "") {
+    if (!m || !m.src) return `<div class="${cls}" style="display:grid;place-items:center;color:#888;position:absolute;inset:0">sin vista previa</div>`;
+    if (m.type === "image") return `<img class="${cls}" src="${esc(m.src)}" alt="">`;
+    return `<video class="${cls}" src="${esc(m.src)}" ${m.poster ? `poster="${esc(m.poster)}"` : ""} muted loop playsinline autoplay preload="metadata"></video>`;
+  }
+
+  function figure(m, caption) {
+    return `<figure><div class="box" style="aspect-ratio:${aspect}">${mediaEl(m)}</div><figcaption>${esc(caption)}</figcaption></figure>`;
+  }
+
+  const phase = Number(sb.phase) || 1;
+  const total = shots.reduce((a, s) => a + secs(s.duration), 0);
+
+  app.innerHTML = `
+    <header>
+      <div>
+        <div class="eyebrow">Storyboard · v${esc(sb.version || 1)}</div>
+        <h1>${esc(sb.title || "Sin título")}</h1>
+      </div>
+      <div class="meta">
+        ${sb.format ? `<span class="pill">${esc(sb.format)}</span>` : ""}
+        <span class="pill">${shots.length} planos</span>
+        <span class="pill">≈ ${Math.round(total)} s</span>
+        ${sb.updated ? `<span class="pill">${esc(sb.updated)}</span>` : ""}
+      </div>
+    </header>
+
+    <div class="phases">
+      ${PHASES.map(([n, d], i) => `<div class="phase ${i + 1 < phase ? "done" : i + 1 === phase ? "now" : ""}"><b>${i + 1}.<span class="t"> ${n}</span></b><span>${d}</span></div>`).join("")}
+    </div>
+
+    <div class="brief">
+      <div class="card"><h2>Lo que he entendido</h2><p>${esc(sb.idea)}</p></div>
+      <div class="card"><h2>Look &amp; feel</h2><p>${esc(sb.look)}</p></div>
+    </div>
+
+    ${shots.length ? `
+    <section class="animatic">
+      <div>
+        <div class="screen" id="screen" style="aspect-ratio:${aspect};${vertical ? "max-width:420px" : ""}"></div>
+        <div class="bar" id="bar">${shots.map((s, i) => `<button style="--d:${secs(s.duration)}" data-i="${i}" aria-label="Plano ${i + 1}"><i></i></button>`).join("")}</div>
+        <div class="controls">
+          <button class="btn primary" id="play">▶ Reproducir secuencia</button>
+          <button class="btn" id="prev">← Anterior</button>
+          <button class="btn" id="next">Siguiente →</button>
+        </div>
+      </div>
+      <div class="card side">
+        <h2>Secuencia</h2>
+        <ol id="seq">${shots.map((s, i) => `<li data-i="${i}">${esc(s.technique?.name)} <span class="seg">· ${secs(s.duration)} s</span></li>`).join("")}</ol>
+      </div>
+    </section>` : ""}
+
+    <section class="shots">
+      ${shots.map((s, i) => shotCard(s, i)).join("")}
+    </section>
+
+    ${sb.notes ? `<div class="card notes"><h2>Notas</h2><p>${esc(sb.notes)}</p></div>` : ""}
+
+    <footer>
+      Para cambiar algo, dilo en el chat: «cambia el plano 3 por la alternativa», «más lento», «quita el 5», «dame otra opción para el 2».
+      Vídeos de referencia: <a href="https://melies.co/cinematic-techniques" target="_blank" rel="noopener">Melies Cinematic Techniques</a>.
+    </footer>`;
+
+  function shotCard(s, i) {
+    const t = s.technique || {};
+    const ref = { type: "video", src: t.preview, poster: t.still };
+    const cols = [figure(ref, "Referencia Melies")];
+    if (s.keyframe) cols.push(figure({ type: "image", src: s.keyframe }, "Imagen clave"));
+    if (s.clip) cols.push(figure({ type: "video", src: s.clip, poster: s.keyframe }, s.clip_label || "Clip generado"));
+    const alts = (s.alternatives || []).map((a, j) => `
+      <button class="alt" data-shot="${i}" data-alt="${j}">
+        ${a.still ? `<img src="${esc(a.still)}" alt="">` : ""}
+        <span><b>${esc(a.name)}</b><br>${esc(a.why)}</span>
+      </button>`).join("");
+    const link = i < shots.length - 1 && s.transition ? `<div class="link">${esc(s.transition)}</div>` : "";
+    return `
+      <div class="shot" id="shot-${i}">
+        <div class="num">${String(i + 1).padStart(2, "0")}</div>
+        <div class="card" style="--cols:${cols.length > 1 ? "1.6fr" : "1fr"}">
+          <div class="media" style="--n:${cols.length}" data-media="${i}">${cols.join("")}</div>
+          <div>
+            <div class="tech">
+              <a class="name" href="${esc(t.url)}" target="_blank" rel="noopener">${esc(t.name)}</a>
+              <span class="cat">${esc(t.category)}</span>
+              <span class="badge ${esc(s.status)}">${esc(s.status || "propuesto")}</span>
+            </div>
+            <dl>
+              <dt>Qué se ve</dt><dd>${esc(s.description)}</dd>
+              <dt>Por qué</dt><dd>${esc(s.purpose)}</dd>
+              <dt>Duración</dt><dd>${secs(s.duration)} s</dd>
+              ${s.extra ? `<dt>Además</dt><dd>${esc(s.extra)}</dd>` : ""}
+            </dl>
+            ${alts ? `<div class="alts"><h3>Alternativas (toca para comparar)</h3>${alts}</div>` : ""}
+          </div>
+        </div>
+      </div>${link}`;
+  }
+
+  // Alternatives swap the reference preview so the user can compare in place.
+  app.addEventListener("click", (e) => {
+    const b = e.target.closest(".alt");
+    if (!b) return;
+    const s = shots[b.dataset.shot], a = s.alternatives[b.dataset.alt];
+    const box = app.querySelector(`[data-media="${b.dataset.shot}"] figure .box`);
+    const on = b.classList.toggle("on");
+    b.parentElement.querySelectorAll(".alt").forEach((x) => x !== b && x.classList.remove("on"));
+    const t = on ? a : s.technique;
+    box.innerHTML = mediaEl({ type: "video", src: t.preview, poster: t.still });
+    box.nextElementSibling.textContent = on ? `Alternativa: ${a.name}` : "Referencia Melies";
+  });
+
+  if (!shots.length) return;
+
+  // Animatic: plays each shot for its planned duration, in order.
+  const screen = document.getElementById("screen");
+  const bars = [...document.querySelectorAll("#bar button")];
+  const items = [...document.querySelectorAll("#seq li")];
+  let cur = 0, playing = false, start = 0, raf = 0;
+
+  function show(i) {
+    cur = (i + shots.length) % shots.length;
+    const s = shots[cur], m = bestMedia(s);
+    screen.innerHTML = `${mediaEl(m)}<span class="src">${esc(m.label)}</span>
+      <div class="label"><b>${String(cur + 1).padStart(2, "0")} · ${esc(s.technique?.name)}</b><small>${esc(s.description)}</small></div>`;
+    bars.forEach((b, j) => { b.classList.toggle("on", j < cur); b.querySelector("i").style.width = j < cur ? "100%" : "0"; });
+    items.forEach((li, j) => li.classList.toggle("on", j === cur));
+    start = performance.now();
+  }
+
+  function tick(now) {
+    if (!playing) return;
+    const d = secs(shots[cur].duration) * 1000, p = Math.min(1, (now - start) / d);
+    bars[cur].querySelector("i").style.width = `${p * 100}%`;
+    if (p >= 1) {
+      if (cur === shots.length - 1) { stop(); return; }
+      show(cur + 1);
+    }
+    raf = requestAnimationFrame(tick);
+  }
+
+  const playBtn = document.getElementById("play");
+  function stop() { playing = false; cancelAnimationFrame(raf); playBtn.textContent = "▶ Reproducir secuencia"; }
+  playBtn.onclick = () => {
+    if (playing) return stop();
+    if (cur === shots.length - 1 && bars[cur].querySelector("i").style.width === "100%") show(0);
+    playing = true; playBtn.textContent = "❚❚ Pausa"; start = performance.now(); raf = requestAnimationFrame(tick);
+  };
+  document.getElementById("prev").onclick = () => { stop(); show(cur - 1); };
+  document.getElementById("next").onclick = () => { stop(); show(cur + 1); };
+  bars.forEach((b) => (b.onclick = () => { stop(); show(+b.dataset.i); }));
+  items.forEach((li) => (li.onclick = () => { stop(); show(+li.dataset.i); document.getElementById(`shot-${li.dataset.i}`).scrollIntoView({ behavior: "smooth", block: "center" }); }));
+  show(0);
+})();
+</script>
+</body>
+</html>

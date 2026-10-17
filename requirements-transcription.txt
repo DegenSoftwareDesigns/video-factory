@@ -1,0 +1,4 @@
+-r requirements.txt
+# Optional: pulls PyTorch and downloads a Whisper model on first transcription.
+# Select the appropriate CPU/CUDA PyTorch build for your machine separately.
+openai-whisper==20250625

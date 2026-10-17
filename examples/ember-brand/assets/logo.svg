@@ -1,0 +1,94 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 180" role="img" aria-label="EMBER: horizontal logo">
+  <title>EMBER: horizontal logo</title>
+  <defs>
+    <symbol id="mark" viewBox="0 0 256 256">
+      <path data-fill="primary" fill="#F65335" d="M150 14C152 54 184 70 194 112C213 170 178 211 128 211C78 211 49 176 61 133C67 109 86 96 90 73C103 87 108 101 105 117C129 94 151 63 150 14Z" />
+    </symbol>
+    <g id="feet" data-fill="ink" fill="#173D30">
+      <rect x="87" y="201" width="32" height="20" rx="10" />
+      <rect x="137" y="201" width="32" height="20" rx="10" />
+    </g>
+    <g id="front-body">
+      <use href="#feet" />
+      <use href="#mark" width="256" height="256" />
+      <ellipse data-fill="sun" fill="#FFD166" cx="128" cy="132" rx="45" ry="41" />
+      <path data-fill="sun" fill="#FFD166" d="m128 181 9 9-9 9-9-9Z" />
+    </g>
+    <g id="neutral-face" data-fill="ink" fill="#173D30">
+      <ellipse cx="110" cy="127" rx="5" ry="8" />
+      <ellipse cx="146" cy="127" rx="5" ry="8" />
+      <path data-stroke="ink" stroke="#173D30" stroke-width="4" stroke-linecap="round" fill="none" d="M119 148q9 5 18 0" />
+    </g>
+    <symbol id="front" viewBox="0 0 256 256">
+      <use href="#front-body" />
+      <use href="#neutral-face" />
+    </symbol>
+    <symbol id="three-quarter" viewBox="0 0 256 256">
+      <use href="#feet" />
+      <use href="#mark" width="256" height="256" />
+      <ellipse data-fill="sun" fill="#FFD166" cx="144" cy="132" rx="36" ry="41" />
+      <g data-fill="ink" fill="#173D30">
+        <ellipse cx="131" cy="127" rx="5" ry="8" />
+        <ellipse cx="160" cy="127" rx="4" ry="8" />
+        <path data-stroke="ink" stroke="#173D30" stroke-width="4" stroke-linecap="round" fill="none" d="M139 149q7 4 14-1" />
+      </g>
+      <path data-fill="sun" fill="#FFD166" d="m143 182 8 8-8 9-8-9Z" />
+    </symbol>
+    <symbol id="side" viewBox="0 0 256 256">
+      <g transform="translate(39 0) scale(.75 1)">
+        <use href="#feet" />
+        <use href="#mark" width="256" height="256" />
+      </g>
+      <ellipse data-fill="sun" fill="#FFD166" cx="162" cy="132" rx="20" ry="39" />
+      <ellipse data-fill="ink" fill="#173D30" cx="170" cy="128" rx="4" ry="8" />
+      <path data-stroke="ink" stroke="#173D30" stroke-width="4" stroke-linecap="round" fill="none" d="m167 149 10-2" />
+    </symbol>
+    <symbol id="back" viewBox="0 0 256 256">
+      <use href="#feet" />
+      <use href="#mark" width="256" height="256" transform="translate(256 0) scale(-1 1)" />
+      <path data-stroke="ink" stroke="#173D30" stroke-opacity=".25" stroke-width="4" stroke-linecap="round" fill="none" d="M127 143q-14 18-8 40" />
+    </symbol>
+    <symbol id="happy" viewBox="0 0 256 256">
+      <use href="#front-body" />
+      <g data-stroke="ink" stroke="#173D30" stroke-width="5" stroke-linecap="round" fill="none">
+        <path d="M104 128q6-10 12 0m24 0q6-10 12 0" />
+        <path d="M116 145q12 17 24 0" />
+      </g>
+    </symbol>
+    <symbol id="focused" viewBox="0 0 256 256">
+      <use href="#front-body" />
+      <use href="#neutral-face" />
+      <g data-stroke="ink" stroke="#173D30" stroke-width="5" stroke-linecap="round" fill="none">
+        <path d="m102 112 15 5m22 0 15-5" />
+      </g>
+    </symbol>
+    <symbol id="surprised" viewBox="0 0 256 256">
+      <use href="#front-body" />
+      <g data-fill="ink" fill="#173D30">
+        <ellipse cx="110" cy="125" rx="6" ry="10" />
+        <ellipse cx="146" cy="125" rx="6" ry="10" />
+        <ellipse cx="128" cy="150" rx="7" ry="9" />
+      </g>
+    </symbol>
+    <symbol id="wave" viewBox="0 0 256 256">
+      <path data-stroke="ink" stroke="#173D30" stroke-width="10" stroke-linecap="round" fill="none" d="M183 151q38-9 34-43m-149 46-21 20" />
+      <use href="#front-body" />
+      <g data-stroke="ink" stroke="#173D30" stroke-width="5" stroke-linecap="round" fill="none">
+        <path d="M104 128q6-10 12 0m24 0q6-10 12 0M116 145q12 17 24 0" />
+      </g>
+    </symbol>
+    <symbol id="run" viewBox="0 0 256 256">
+      <g data-stroke="ink" stroke="#173D30" stroke-width="10" stroke-linecap="round" fill="none">
+        <path d="m114 196-22 25-19-2m65-22 29 16 18-12M72 148l-24 15m127-14 28-20" />
+      </g>
+      <g transform="rotate(8 128 140)">
+        <use href="#mark" width="256" height="256" />
+        <ellipse data-fill="sun" fill="#FFD166" cx="128" cy="132" rx="45" ry="41" />
+        <use href="#neutral-face" />
+        <path data-fill="sun" fill="#FFD166" d="m128 181 9 9-9 9-9-9Z" />
+      </g>
+    </symbol>
+  </defs>
+  <use href="#mark" width="180" height="180" />
+  <text x="183" y="126" fill="#173D30" font-family="Arial Black, Arial, sans-serif" font-size="98" font-weight="900" letter-spacing="-5">EMBER</text>
+</svg>
