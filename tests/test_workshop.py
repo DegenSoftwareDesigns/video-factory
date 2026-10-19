@@ -87,8 +87,8 @@ class SkillTests(unittest.TestCase):
 
     def test_committed_lock_covers_every_expected_skill(self):
         lock = skills.load_lock(ROOT)
-        self.assertEqual(len(lock["sources"]), 6)
-        self.assertEqual(sum(len(source["skills"]) for source in lock["sources"]), 27)
+        self.assertEqual(len(lock["sources"]), 7)
+        self.assertEqual(sum(len(source["skills"]) for source in lock["sources"]), 28)
 
     def test_both_agents_receive_skills_without_modifying_own_source(self):
         own = self.root / ".claude/skills/storyboard"

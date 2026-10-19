@@ -33,6 +33,7 @@ with minimal media.
 | Add sound effects to motion graphics | `sound-effects` | "Add sound effects" |
 | Mix audio in a HyperFrames composition: fades, ducking, EQ | `hyperframes-audio` | "Lower the music while I speak" |
 | Source or generate music, SFX, voice, or images | `media-use` | "Find a calm music bed" |
+| Write a bespoke music brief and Suno v6 prompts | `suno-songwriter` | "Write a Suno prompt for this promo's arc" |
 | Separate a subject from the background | `object-separation` | "Cut the person out of the background" |
 | Generate AI clips from text or images | Higgsfield MCP + `kling-ai` prompts + Melies technique | "Make a five-second night-city shot with a dolly zoom" |
 | Evaluate a new skill or tool | "Evaluating a new skill" recipe | "Review this tool and tell me whether it is useful" |
@@ -90,6 +91,13 @@ requested, after showing what will be removed and how much space it will free.
   measure the selected take. Phrase changes and pauses matter as well as beats;
   every cut need not land on a beat. References and keyframes can be prepared early,
   but final durations depend on the recording.
+- **Bespoke music.** Use `media-use` for a generic or inexpensive bed. When the
+  piece's arc depends on the music, use `suno-songwriter` to write the brief and
+  Suno v6 prompts (2-3 directions), generate takes on Suno through an approved
+  channel, and save `music-brief.md`, `suno-generation.json`, and the selected take
+  in `04_audio/`. Persona or album files go in the production folder, not the
+  workshop root. Do not automate Suno through cookies, CAPTCHA handling, or browser
+  scraping; see `research/suno-skills-evaluation.md`.
 - **Narrated video or interview.** Voice/dialogue determines the structure first.
   Select supporting music before locking the edit and keep it subordinate to speech.
 - **Finishing order.** With music or voice already selected: cuts → colour →
@@ -198,3 +206,4 @@ current production storyboards remain local in `videos/`.
 | `clipify` | louisedesadeleer/clipify |
 | `explainer-*`, `motion-broll`, `object-separation`, `sound-effects` | Barty-Bart/motion-graphics |
 | `kling-ai` | maciejdzierzek/kling-ai-prompt-generator |
+| `suno-songwriter` | regiellis/suno-songwriter-agent-skill |

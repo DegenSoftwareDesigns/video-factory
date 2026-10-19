@@ -13,6 +13,7 @@ hooks. Root licences are available in `.cache/skill-sources/<id>/<commit>/`.
 | [maciejdzierzek/kling-ai-prompt-generator](https://github.com/maciejdzierzek/kling-ai-prompt-generator) | `kling-ai` | MIT |
 | [Barty-Bart/motion-graphics](https://github.com/Barty-Bart/motion-graphics) | `explainer-*`, `motion-broll`, `object-separation`, `sound-effects` | MIT |
 | [browser-use/video-use](https://github.com/browser-use/video-use) | `video-use` | MIT |
+| [regiellis/suno-songwriter-agent-skill](https://github.com/regiellis/suno-songwriter-agent-skill) | `suno-songwriter` | MIT |
 
 Media assets may have different licences from the code. Check each skill's
 manifests, credits, and `LICENSES.md` before redistributing assets. If future

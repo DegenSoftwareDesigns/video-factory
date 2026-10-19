@@ -27,7 +27,7 @@ lives in `.claude/skills/storyboard/`, and the installer creates a copy for Code
 Start a new agent session after installation to discover the skills.
 
 Setup creates `.venv`, installs the basic dependencies, runs `npm ci`, and installs
-the **27 external skills** pinned in `skills.lock.json`. `-Audio` adds music
+the **28 external skills** pinned in `skills.lock.json`. `-Audio` adds music
 analysis; `-Transcription` adds Whisper/PyTorch, which requires substantially more
 disk space. Some workflows download models and Chromium when first used.
 To install skills only: `.\scripts\setup.ps1 -SkillsOnly -Agent both`.
@@ -165,4 +165,4 @@ filenames; review file contents before publishing as well.
 
 Follow `docs/skills.md` to update dependencies. Third-party sources and licences
 are listed in `THIRD_PARTY.md`. The three Suno candidates are evaluated in
-`research/suno-skills-evaluation.md`; they are not installed yet.
+`research/suno-skills-evaluation.md`; only `suno-songwriter` is installed, as a pilot.

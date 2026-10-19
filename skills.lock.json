@@ -67,6 +67,13 @@
       "commit": "43cfc566833548093455c9d4a46bd69913b7e552",
       "license": "MIT",
       "skills": [{"name": "video-use", "path": ".", "exclude": ["tests"], "tree_sha256": "6744d02946518cecdbe1c67c104693c8e686b562e95f64df30cd5d1d6539fa7f"}]
+    },
+    {
+      "id": "suno-songwriter",
+      "repository": "https://github.com/regiellis/suno-songwriter-agent-skill.git",
+      "commit": "cc3053bd027f822476734f41edbf9ae98078f61a",
+      "license": "MIT",
+      "skills": [{"name": "suno-songwriter", "path": ".", "exclude": [".gitignore", "CHANGELOG.md", "README.md", "docs", "evals", "scripts"], "tree_sha256": "cac3b13cad9a1de39d498e80ea1e25222999ff489c1c5bfe051d924d65b1f3b2"}]
     }
   ]
 }
