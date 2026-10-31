@@ -12,7 +12,9 @@ For installation and dependency updates, read `README.md` and `docs/skills.md`.
   `python scripts/videos.py new "<name>" --tipo <type> --formato <aspect> --intencion "..."`.
   Read `python scripts/videos.py learnings` before planning.
 - Client project: when the user names another project, or the production belongs to
-  one, add `--project <folder|alias>` and follow `docs/client-projects.md`. Its
+  one, add `--project <folder|alias>` and follow `docs/client-projects.md`. Projects can
+  also open the workshop through the `plugin/` entry skill and the `bin/vf*` commands,
+  which default to the open folder; keep `plugin/` to that one skill. Its
   `video-factory.json` sets folders, references, records and deliverables. The user's
   instructions on organization override the manifest, and the manifest overrides
   the standalone folders.

@@ -123,10 +123,33 @@ original spelling for compatibility.
 
 ## Producing for another project
 
-The workshop can also serve a project that keeps its own folders, such as a
-campaign with an established brand kit. Dependencies stay here; the client project
-keeps its references, records and deliverables. Add a `video-factory.json` to the
-client project describing its folders and deliverables, then pass it explicitly:
+The workshop is meant to be **instantiated** from your own projects: the knowledge
+(skills, scripts, pinned tools, method learnings) stays here, and each project keeps
+its references, records and deliverables. Nothing a project produces is stored here.
+
+### Open the project and enable the plugin (recommended)
+
+Register this folder once as a local plugin marketplace, then enable the small
+`video-factory` plugin only in the projects that need it:
+
+```powershell
+claude plugin marketplace add "<path to this workshop>"
+cd "<path to the project>"
+claude plugin install video-factory@video-factory --scope project --config "workshop=<path to this workshop>"
+```
+
+The plugin is one entry skill (`/video-factory`) of a few kilobytes; Claude Code copies
+it into its plugin cache, and it points back to this workshop for `GUIDE.md`, the
+installed skills and the `bin/` commands (`vf`, `vf-storyboard`, `vf-melies`,
+`vf-hyperframes`). Those commands treat the open folder as the client project.
+Projects that do not enable it pay nothing. Never point a marketplace at a folder
+that contains productions or credentials as the plugin itself: the plugin source is
+only `plugin/`.
+
+### Or run from the workshop
+
+Add a `video-factory.json` to the client project describing its folders and
+deliverables, then pass it explicitly:
 
 ```powershell
 python scripts/videos.py new "intro" --project "F:\Client" --tipo ia-storyboard --formato 16:9

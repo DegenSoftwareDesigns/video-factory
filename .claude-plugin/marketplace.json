@@ -1,0 +1,14 @@
+{
+  "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
+  "name": "video-factory",
+  "description": "Local workshop plugins. Add this folder as a marketplace, then enable a plugin per project.",
+  "owner": { "name": "DegenSoftwareDesigns" },
+  "plugins": [
+    {
+      "name": "video-factory",
+      "description": "Video production workshop that writes into the open project's folders.",
+      "source": "./plugin",
+      "category": "productivity"
+    }
+  ]
+}

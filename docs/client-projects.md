@@ -67,6 +67,23 @@ A project without a manifest can still be used with `--project <folder> --out <f
 A machine-local alias file, `projects.local.json` (ignored by Git), maps short names
 to client folders: `{"stogie": "F:/Proyectos/Memes/stogie"}`.
 
+## Open the workshop from the project
+
+Enable the `video-factory` plugin in the project (README, "Producing for another
+project"). A session opened in the project then has the `/video-factory` entry skill,
+which reads this workshop's guide and skills and runs the `bin/` commands:
+
+| Command | Runs |
+|---|---|
+| `vf` | `scripts/videos.py` |
+| `vf-storyboard` | the storyboard skill's `storyboard.py` |
+| `vf-melies` | the storyboard skill's `melies.py` |
+| `vf-hyperframes` | the pinned HyperFrames CLI |
+
+They use the workshop's `.venv`, set `PYTHONUTF8=1`, and set
+`VIDEO_FACTORY_PROJECT` to the open folder unless it is the workshop itself, so
+`--project` becomes optional. Explicit flags still win.
+
 ## Commands
 
 ```powershell

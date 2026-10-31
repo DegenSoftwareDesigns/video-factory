@@ -96,7 +96,9 @@ class Production:
 
 def add_arguments(parser):
     group = parser.add_argument_group("destination")
-    group.add_argument("--project", help="client project folder, its video-factory.json, or an alias in projects.local.json")
+    group.add_argument("--project", default=os.environ.get("VIDEO_FACTORY_PROJECT") or None,
+                       help="client project folder, its video-factory.json, or an alias in projects.local.json; "
+                            "defaults to $VIDEO_FACTORY_PROJECT, which the plugin's vf commands set to the open project")
     group.add_argument("--out", help="output folder for this production; overrides the manifest and videos/")
     group.add_argument("--role", action="append", default=[], metavar="ROLE=PATH",
                        help=f"folder for one role ({', '.join(ROLES)}); repeatable")
@@ -163,7 +165,7 @@ def load_project(project):
 def client(project, name, overrides=None):
     root, manifest, manifest_path = load_project(project)
     slug = slugify(manifest.get("slug") or manifest.get("name") or root.name)
-    production = slugify(name)
+    production = slugify(name.replace("\\", "/").rsplit("/", 1)[-1])  # accepts the "<project>/<name>" id too
     if not production:
         raise WorkspaceError("The production name cannot be empty.")
     work = WORK / slug / production

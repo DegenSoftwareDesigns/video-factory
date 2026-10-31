@@ -226,6 +226,7 @@ current production storyboards remain local in `videos/`.
 | Skills | Repository |
 |---|---|
 | `storyboard` | Project-owned (`.claude/skills/storyboard/`) |
+| `video-factory` (entry for other projects) | Project-owned plugin (`plugin/`), see `docs/client-projects.md` |
 | `hyperframes`, `hyperframes-*`, `media-use`, `embedded-captions`, `talking-head-recut`, `general-video`, `faceless-explainer`, `motion-graphics`, `music-to-video`, `slideshow` | heygen-com/hyperframes |
 | `video-use` | browser-use/video-use |
 | `watch` | bradautomates/claude-video |

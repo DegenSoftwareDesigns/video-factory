@@ -93,6 +93,26 @@ class DestinationTests(Base):
         self.assertEqual(production.references, [self.client / "Docs/refs"])
         self.assertEqual(production.work, self.workshop / ".work/client/intro-teaser")
 
+    def test_open_project_from_environment_and_full_ids(self):
+        with mock.patch.dict(workspace.os.environ, {"VIDEO_FACTORY_PROJECT": str(self.client)}):
+            parser = argparse.ArgumentParser()
+            workspace.add_arguments(parser)
+            args = parser.parse_args([])
+        self.assertEqual(args.project, str(self.client))
+        self.assertEqual(workspace.client(args.project, "client/intro").name, "intro")
+
+    def test_plugin_entry_is_minimal_and_points_at_the_workshop(self):
+        market = json.loads((ROOT / ".claude-plugin/marketplace.json").read_text(encoding="utf-8"))
+        plugin_dir = ROOT / market["plugins"][0]["source"]
+        manifest = json.loads((plugin_dir / ".claude-plugin/plugin.json").read_text(encoding="utf-8"))
+        self.assertEqual(manifest["userConfig"]["workshop"]["type"], "directory")
+        files = [p for p in plugin_dir.rglob("*") if p.is_file()]
+        self.assertEqual(len(files), 2)  # copied into each user's plugin cache: keep it tiny
+        entry = (plugin_dir / "skills/video-factory/SKILL.md").read_text(encoding="utf-8")
+        for command in ("bin/vf", "bin/vf-storyboard", "bin/vf-melies", "bin/vf-hyperframes"):
+            self.assertIn(command, entry)
+            self.assertTrue((ROOT / command).is_file())
+
     def test_explicit_values_take_precedence(self):
         saved = workspace.client(self.client, "intro", {"roles": {"audio": "Audio/{production}"}, "references": ["A"]})
         saved.save_overrides()
