@@ -66,7 +66,7 @@ relative to the manifest.
 
 A project without a manifest can still be used with `--project <folder> --out <folder>`.
 A machine-local alias file, `projects.local.json` (ignored by Git), maps short names
-to client folders: `{"stogie": "F:/Proyectos/Memes/stogie"}`.
+to client folders: `{"stogie": "D:/Projects/stogie"}`.
 
 ## Open the workshop from the project
 
