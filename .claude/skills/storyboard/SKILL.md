@@ -23,12 +23,23 @@ python $SB/melies.py shot camera-movement/whip-pan --prompt   # + prompt_templat
 python scripts/videos.py learnings --tipo ia-storyboard             # past lessons, read before planning
 python scripts/videos.py new "<name>" --tipo ia-storyboard --formato 9:16 --intencion "..."   # prints <id>
 python $SB/storyboard.py init <id> --title "Title" --format 9:16
-python $SB/storyboard.py build <id>           # writes 00_plan/storyboard.data.js + storyboard.html, prints URL
+python $SB/storyboard.py build <id>           # writes storyboard.data.js + storyboard.html, prints URL
+# Client project: add --project <folder|alias> to videos.py new/paths/check and storyboard.py init/build
+python scripts/videos.py paths <id>           # where each role (plan, keyframes, clips, audio...) lives
+python scripts/videos.py check <id> --stage planning --shots N   # declared deliverables on disk
 ```
 
 Categories: `camera-movement`, `framing`, `camera-angles`, `lighting`, `composition`, `lenses`, `color`, `time-and-motion`, `effects`, `editing`, `atmosphere`, `genre-looks`, `viral-looks`. The full index is 424 techniques; `melies.py index` prints it as JSON when you need to browse.
 
-Each video lives locally in `videos/<YYYY-MM-DD>_<name>/` (created by `scripts/videos.py new`, see AGENTS.md). Shared lightweight examples belong in `examples/`:
+### Where files go
+
+Phases below name standalone folders; each one means a **role** (`00_plan/` = plan, `01_referencias/` = references, `02_keyframes/` = keyframes, `03_clips/` = clips, `04_audio/` = audio, `05_montaje/` = assembly, `final/` = final). Read `videos.py paths <id>` once per session and write every output to its role folder.
+
+- **Standalone (default):** each video lives locally in `videos/<YYYY-MM-DD>_<name>/` (created by `scripts/videos.py new`, see AGENTS.md); `storyboard.json` and the board live in `00_plan/`.
+- **Client project (`--project`):** the client manifest decides folders, references and deliverables (`docs/client-projects.md`). `storyboard.json`, `storyboard.data.js` and `storyboard.html` stay in the workshop's `.work/<project>/<name>/` and `build` prints a `file:` URL; never copy them into the client folder unless the user asks. Reuse the manifest's `references` as generation inputs. When the client declares deliverables, they replace this skill's default outputs: e.g. storyboard sheets instead of an exported board, its keyframe naming pattern and size instead of `NN.png`, and its single prompt document instead of per-shot notes. Record approvals and costs in the client's `records`. Run `check` before each phase's STOP.
+- The user's instructions on organization override both.
+
+Standalone layout (shared lightweight examples belong in `examples/`):
 
 ```
 00_plan/storyboard.json      source of truth (you edit this)
@@ -39,7 +50,7 @@ Each video lives locally in `videos/<YYYY-MM-DD>_<name>/` (created by `scripts/v
 03_clips/NN.mp4              phase 5
 04_audio/                    accepted music/voice and timing map (before animation); final SFX/mix
 05_montaje/                  intermediate renders, HyperFrames project (phase 6)
-final/                       deliverables: final.mp4 (+ cover image), retained after cleanup
+final/                       deliverables: final.mp4 (+ cover image), always kept by cleanup
 ```
 
 `storyboard.json` format:
@@ -60,7 +71,7 @@ final/                       deliverables: final.mp4 (+ cover image), retained a
       "extra": "Optional additional lighting, colour, or lens technique.",
       "status": "propuesto",
       "alternatives": [{ "technique": "camera-movement/whip-pan", "why": "More energy, less impact" }],
-      "keyframe": null, "clip": null      // later: "02_keyframes/01.png", "03_clips/01.mp4"
+      "keyframe": null, "clip": null      // later: "02_keyframes/01.png", "03_clips/01.mp4" (relative to the production base: video folder or client root)
     }
   ]
 }
@@ -68,7 +79,7 @@ final/                       deliverables: final.mp4 (+ cover image), retained a
 
 For compatibility, stored `status` values remain `propuesto` (proposed), `aprobado` (approved), or `cambiar` (needs changes). `build` fills in each technique's name, link, reference clip and still; never write media URLs by hand.
 
-**Showing the board:** serve it with `python -m http.server 8765 --bind 127.0.0.1 --directory videos` from the project root, or reuse a running local server. Open the URL printed by `build` (`http://localhost:8765/<id>/00_plan/storyboard.html`) with the browser available in the agent session. A local `.claude/launch.json` may define this server, but is optional and machine-specific. Also provide the local HTML file link. The board links Melies media from its site; never download or copy Melies clips, stills or text into the project.
+**Showing the board:** for a client project, open the `file:` URL printed by `build`. For standalone, serve it with `python -m http.server 8765 --bind 127.0.0.1 --directory videos` from the project root, or reuse a running local server. Open the URL printed by `build` (`http://localhost:8765/<id>/00_plan/storyboard.html`) with the browser available in the agent session. A local `.claude/launch.json` may define this server, but is optional and machine-specific. Also provide the local HTML file link. The board links Melies media from its site; never download or copy Melies clips, stills or text into the project.
 
 ## Phase 1 · Idea
 
@@ -148,4 +159,4 @@ Generate enough source duration for the approved cut and its transitions.
 
 **STOP:** show the final video and ask for last changes.
 
-When the user is happy, close the loop in `videos.csv` (see CLAUDE.md): ask for a 1–10 rating, what worked and what to improve, and record them with `videos.py update <id> --estado terminado --nota N --duracion S --herramientas "…" --funciono "…" --mejorar "…"`. Add your own technical lessons (models that failed, prompts that worked) to those fields too. Offer cleaning (`videos.py clean`) but never run it without the user asking.
+When the user is happy, close the loop in `videos.csv` (see CLAUDE.md): ask for a 1–10 rating, what worked and what to improve, and record them with `videos.py update <id> --estado terminado --nota N --duracion S --herramientas "…" --funciono "…" --mejorar "…"`. Add your own technical lessons (models that failed, prompts that worked) to those fields too. Marking it `terminado` prints the cleanup dry run: before that, make sure every shot's `keyframe` and `clip` point at the final takes (unreferenced takes count as discarded); add `--keep` for final-version clips built outside the storyboard, and `--drop` for older versions or heavy masters in `final/`, which should end with the latest light version per format. Show the dry run and run `videos.py clean <id> --yes` once the user approves; move approved reusable references or music to the brand kit first.

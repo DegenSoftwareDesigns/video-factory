@@ -27,7 +27,7 @@ lives in `.claude/skills/storyboard/`, and the installer creates a copy for Code
 Start a new agent session after installation to discover the skills.
 
 Setup creates `.venv`, installs the basic dependencies, runs `npm ci`, and installs
-the **27 external skills** pinned in `skills.lock.json`. `-Audio` adds music
+the **28 external skills** pinned in `skills.lock.json`. `-Audio` adds music
 analysis; `-Transcription` adds Whisper/PyTorch, which requires substantially more
 disk space. Some workflows download models and Chromium when first used.
 To install skills only: `.\scripts\setup.ps1 -SkillsOnly -Agent both`.
@@ -121,11 +121,52 @@ than substituting `npx ...@latest`. Each production can pin its own CLI version.
 Existing CLI flags, stored values, and production folder names retain their
 original spelling for compatibility.
 
+## Producing for another project
+
+The workshop is meant to be **instantiated** from your own projects: the knowledge
+(skills, scripts, pinned tools, method learnings) stays here, and each project keeps
+its references, records and deliverables. Nothing a project produces is stored here.
+
+### Open the project and enable the plugin (recommended)
+
+Register this folder once as a local plugin marketplace, then enable the small
+`video-factory` plugin only in the projects that need it:
+
+```powershell
+claude plugin marketplace add "<path to this workshop>"
+cd "<path to the project>"
+claude plugin install video-factory@video-factory --scope project --config "workshop=<path to this workshop>"
+```
+
+The plugin is one entry skill (`/video-factory`) of a few kilobytes; Claude Code copies
+it into its plugin cache, and it points back to this workshop for `GUIDE.md`, the
+installed skills and the `bin/` commands (`vf`, `vf-storyboard`, `vf-melies`,
+`vf-hyperframes`). Those commands treat the open folder as the client project.
+Projects that do not enable it pay nothing. Never point a marketplace at a folder
+that contains productions or credentials as the plugin itself: the plugin source is
+only `plugin/`.
+
+### Or run from the workshop
+
+Add a `video-factory.json` to the client project describing its folders and
+deliverables, then pass it explicitly:
+
+```powershell
+python scripts/videos.py new "intro" --project "F:\Client" --tipo ia-storyboard --formato 16:9
+python scripts/videos.py paths client/intro
+python scripts/videos.py check client/intro --stage planning --shots 8
+```
+
+One-off destinations can be given with `--out`, `--role ROLE=PATH`, `--refs` and
+`--deliverables`, and the user's instructions always win over the manifest. Short
+aliases for client folders go in the ignored `projects.local.json`. The manifest
+format, precedence and an agent checklist are in `docs/client-projects.md`.
+
 ## What is shared
 
 | In Git | Local to each machine |
 |---|---|
-| Instructions, scripts, and our own `storyboard` skill | `videos/` and `videos.csv` |
+| Instructions, scripts, and our own `storyboard` skill | `videos/`, `videos.csv`, `.work/` and `projects.local.json` |
 | External skill commits and hashes | Installed external skills and `vendor/` clones |
 | Node configuration and lockfile | `.venv/`, `node_modules/`, models, and caches |
 | Lightweight brand kit and future productions in `examples/` | Personal/client brands and production media |
@@ -140,6 +181,62 @@ storyboard using the HTTP command above.
 Git does not back up ignored productions: keep them in the team's shared storage
 or backup system. Add lightweight examples later using `examples/README.md`.
 
+## For the team
+
+The repository is private: ask its owner for access. Each teammate then keeps their
+own workshop checkout, wherever they like, and uses it from their own projects.
+
+**1. Install the workshop (once per machine).** Clone it, run the Windows setup
+above (or the macOS/Linux steps), and record where it lives in the per-user
+`VIDEO_FACTORY_HOME` variable, which project instructions use instead of a fixed path:
+
+```powershell
+git clone https://github.com/DegenSoftwareDesigns/video-factory.git
+cd video-factory
+.\scripts\setup.ps1 -Agent both -Audio
+[Environment]::SetEnvironmentVariable('VIDEO_FACTORY_HOME', (Get-Location).Path, 'User')
+```
+
+On macOS/Linux add `export VIDEO_FACTORY_HOME="<path to the checkout>"` to the
+shell profile. Restart the agent afterwards so it sees the variable. Sign in to your
+own providers (see "Accounts and maintenance"); credentials never go into Git.
+
+**2. Keep it current.** `git pull`, then rerun the setup when `skills.lock.json`,
+`package-lock.json` or the requirements changed. Everyone works from the same pins.
+
+**3. Use it in a project.** In Claude Code, register the marketplace once (from
+GitHub, or from your checkout as in "Producing for another project") and enable the
+plugin in each project that makes videos:
+
+```powershell
+claude plugin marketplace add DegenSoftwareDesigns/video-factory
+cd "<path to the project>"
+claude plugin install video-factory@video-factory --scope project --config "workshop=$env:VIDEO_FACTORY_HOME"
+```
+
+A project shared through Git can declare the plugin in its committed
+`.claude/settings.json`, so Claude Code offers it to whoever opens the project and
+only asks for their workshop folder:
+
+```json
+{
+  "extraKnownMarketplaces": {
+    "video-factory": {
+      "source": { "source": "github", "repo": "DegenSoftwareDesigns/video-factory" }
+    }
+  },
+  "enabledPlugins": { "video-factory@video-factory": true }
+}
+```
+
+For Codex, add the `AGENTS.md` section from `docs/client-projects.md` ("Codex and
+other agents") to the project. It finds the workshop through `VIDEO_FACTORY_HOME`.
+
+**What travels with a project.** Its `video-factory.json` uses paths relative to
+the project, so it works on any machine. Aliases in `projects.local.json`, each
+person's `videos.csv` learning log and the `.work/` board files stay on that
+machine.
+
 ## Accounts and maintenance
 
 Each person signs in to their own providers. For HeyGen, use its CLI and
@@ -149,9 +246,11 @@ Each person signs in to their own providers. For HeyGen, use its CLI and
 variables locally. Other connections and credentials are covered in `GUIDE.md`
 and the relevant skill.
 
-The root `.env.example` is a reference: the workshop does not load that file
-automatically. Export variables into the agent's process or follow the provider's
-authentication mechanism.
+API keys go in the `.env` of the project the work is for, so spending can be counted
+per project; standalone work uses this workshop's `.env` (start from `.env.example`).
+Neither file loads by itself: run keyed tools through `bin/vf-run` (`vf-run.cmd` in
+PowerShell), which loads the right file and lists key names with `--list`. See
+"Provider keys and spending per project" in `docs/client-projects.md`.
 
 ```powershell
 python scripts/skills.py status --target both
@@ -165,4 +264,4 @@ filenames; review file contents before publishing as well.
 
 Follow `docs/skills.md` to update dependencies. Third-party sources and licences
 are listed in `THIRD_PARTY.md`. The three Suno candidates are evaluated in
-`research/suno-skills-evaluation.md`; they are not installed yet.
+`research/suno-skills-evaluation.md`; only `suno-songwriter` is installed, as a pilot.

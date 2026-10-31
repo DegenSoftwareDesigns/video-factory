@@ -1,17 +1,24 @@
 <#
 .SYNOPSIS
-    Download a video with yt-dlp into downloads/<Categoria>.
+    Download a video with yt-dlp into downloads/<Categoria>, or into -Destino.
+
+.DESCRIPTION
+    -Destino sends the file to another folder instead, such as a client project's
+    references folder (see `python scripts/videos.py paths <id> --project ...`).
 
 .EXAMPLE
     .\descargar.ps1 "https://youtu.be/xxxx" references
     .\descargar.ps1 "https://youtu.be/xxxx" music -Audio
     .\descargar.ps1 "https://youtu.be/xxxx" b-roll/nature --download-sections "*1:00-2:30"
+    .\descargar.ps1 "https://youtu.be/xxxx" references -Destino "F:\Client\References"
 #>
 param(
     [Parameter(Mandatory, Position = 0)][string]$Url,
     [Parameter(Mandatory, Position = 1)][string]$Categoria,
     # Extract audio only (m4a)
     [switch]$Audio,
+    # Destination folder that replaces downloads/<Categoria>
+    [string]$Destino,
     # Any extra yt-dlp arguments are passed through as-is
     [Parameter(ValueFromRemainingArguments)][string[]]$Extra
 )
@@ -26,7 +33,7 @@ if ($Categoria -notmatch '^[\w\- ]+(/[\w\- ]+)*$') {
 $root = $PSScriptRoot
 $ytdlp = Join-Path $root '.venv\Scripts\yt-dlp.exe'
 $config = Join-Path $root 'yt-dlp.conf'
-$dest = Join-Path $root (Join-Path 'downloads' $Categoria)
+$dest = if ($Destino) { $Destino } else { Join-Path $root (Join-Path 'downloads' $Categoria) }
 
 $ytArgs = @('--config-location', $config, '-P', $dest)
 if ($Audio) {

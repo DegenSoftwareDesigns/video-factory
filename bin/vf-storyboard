@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+# The storyboard skill's board builder (init/build) for the open project.
+set -euo pipefail
+. "$(dirname "${BASH_SOURCE[0]}")/_vf-env.sh"
+exec "$VF_PYTHON" "$VF_ROOT/.claude/skills/storyboard/scripts/storyboard.py" "$@"

@@ -5,6 +5,8 @@
 /marca-army/
 /marca-oscar-twitter/
 /brands/
+# Workshop-side working files for client-project productions (storyboard.json, HTML board).
+/.work/
 
 # Rebuilt dependencies. The project's own storyboard skill is versioned.
 /vendor/

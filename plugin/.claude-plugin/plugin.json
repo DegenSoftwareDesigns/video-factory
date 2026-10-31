@@ -1,0 +1,16 @@
+{
+  "name": "video-factory",
+  "displayName": "Video Factory",
+  "version": "0.4.0",
+  "description": "Entry to the local video-factory workshop: storyboards with AI shots, HyperFrames motion graphics, editing and audio, writing every output into the open project's own folders.",
+  "author": { "name": "DegenSoftwareDesigns" },
+  "keywords": ["video", "storyboard", "hyperframes", "editing", "ai-video"],
+  "userConfig": {
+    "workshop": {
+      "type": "directory",
+      "title": "Workshop folder",
+      "description": "Your local video-factory checkout, which holds the skills, scripts and pinned tools",
+      "required": true
+    }
+  }
+}

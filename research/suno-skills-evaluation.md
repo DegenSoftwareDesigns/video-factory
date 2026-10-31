@@ -384,6 +384,10 @@ or uploaded audio, also record provenance and authorization.
 
 ## Proposed adoption plan
 
+Status 2026-10-19: step 1 is complete. The `regiellis` repository was confirmed and
+`suno-songwriter` is pinned in `skills.lock.json` at
+`cc3053bd027f822476734f41edbf9ae98078f61a`; the step 2 pilot productions are pending.
+
 1. **Do not install yet.** First confirm that the intended `suno-songwriter` is
    the `regiellis` repository.
 2. **Pilot three videos** pinned to `cc3053bd027f822476734f41edbf9ae98078f61a`:

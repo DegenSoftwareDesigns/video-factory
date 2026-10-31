@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+# The workshop's pinned HyperFrames CLI (package-lock.json), run in the current folder.
+set -euo pipefail
+. "$(dirname "${BASH_SOURCE[0]}")/_vf-env.sh"
+exec "$VF_ROOT/node_modules/.bin/hyperframes" "$@"

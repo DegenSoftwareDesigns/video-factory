@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+# Melies Cinematic Techniques lookup used by the storyboard skill.
+set -euo pipefail
+. "$(dirname "${BASH_SOURCE[0]}")/_vf-env.sh"
+exec "$VF_PYTHON" "$VF_ROOT/.claude/skills/storyboard/scripts/melies.py" "$@"

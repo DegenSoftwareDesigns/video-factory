@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+# Run any command with the open project's provider keys from its .env (scripts/run.py).
+# `vf-run --list` shows which key names it would pass, never their values.
+set -euo pipefail
+. "$(dirname "${BASH_SOURCE[0]}")/_vf-env.sh"
+exec "$VF_PYTHON" "$VF_ROOT/scripts/run.py" "$@"

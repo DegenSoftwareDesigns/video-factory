@@ -1,10 +1,12 @@
 # Installing and updating skills
 
-`skills.lock.json` pins six sources, their full commits, and the SHA-256 hashes of
-the 27 installed payloads. Hashes cover each file's path and contents, normalizing
+`skills.lock.json` pins seven sources, their full commits, and the SHA-256 hashes of
+the 28 installed payloads. Hashes cover each file's path and contents, normalizing
 CRLF to LF in UTF-8 text so Windows and Unix installations agree. Secrets, Git
 metadata, and caches are excluded. Clipify's exclusions omit its promotional
-image/README; video-use's exclusions omit upstream tests. This reproduces the
+image/README; video-use's exclusions omit upstream tests. suno-songwriter's exclusions
+omit its website, changelog, evaluation dataset, and ZIP packager, matching the
+upstream installable ZIP. This reproduces the
 original working copies while retaining their included licences.
 
 ## Installation

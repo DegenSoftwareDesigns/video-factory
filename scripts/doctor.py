@@ -19,7 +19,7 @@ def publication_check(root=ROOT):
     )
     files = sorted(set(filter(None, result.stdout.decode("utf-8").split("\0"))))
     problems, total = [], 0
-    private_roots = {"videos", "videos.csv", "vendor", ".venv", "node_modules", ".cache", "downloads", "brands", "marca-army", "marca-oscar-twitter"}
+    private_roots = {"videos", "videos.csv", "vendor", ".venv", "node_modules", ".cache", "downloads", "brands", ".work", "marca-army", "marca-oscar-twitter"}
     for relative in files:
         path = root / relative
         if not path.is_file():

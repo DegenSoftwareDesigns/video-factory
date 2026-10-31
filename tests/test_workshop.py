@@ -87,8 +87,8 @@ class SkillTests(unittest.TestCase):
 
     def test_committed_lock_covers_every_expected_skill(self):
         lock = skills.load_lock(ROOT)
-        self.assertEqual(len(lock["sources"]), 6)
-        self.assertEqual(sum(len(source["skills"]) for source in lock["sources"]), 27)
+        self.assertEqual(len(lock["sources"]), 7)
+        self.assertEqual(sum(len(source["skills"]) for source in lock["sources"]), 28)
 
     def test_both_agents_receive_skills_without_modifying_own_source(self):
         own = self.root / ".claude/skills/storyboard"
@@ -118,6 +118,7 @@ class PublicationTests(unittest.TestCase):
                  "marca-army/design.md", "marca-oscar-twitter/data.json", ".env", "nested/.env.production",
                  ".claude/launch.json", ".claude/skills/clipify/SKILL.md", ".agents/skills/clipify/SKILL.md",
                  ".claude/skills/storyboard/.cache/technical.json", "examples/demo/renders/final.mp4",
+                 ".work/client/intro/storyboard.json", "projects.local.json",
                  ".claude/skills/storyboard/SKILL.md", "examples/demo/reference.webp", "examples/demo/index.html",
                  ".env.example", "nested/.env.example"]
         for relative in paths:
