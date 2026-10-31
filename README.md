@@ -181,6 +181,62 @@ storyboard using the HTTP command above.
 Git does not back up ignored productions: keep them in the team's shared storage
 or backup system. Add lightweight examples later using `examples/README.md`.
 
+## For the team
+
+The repository is private: ask its owner for access. Each teammate then keeps their
+own workshop checkout, wherever they like, and uses it from their own projects.
+
+**1. Install the workshop (once per machine).** Clone it, run the Windows setup
+above (or the macOS/Linux steps), and record where it lives in the per-user
+`VIDEO_FACTORY_HOME` variable, which project instructions use instead of a fixed path:
+
+```powershell
+git clone https://github.com/DegenSoftwareDesigns/video-factory.git
+cd video-factory
+.\scripts\setup.ps1 -Agent both -Audio
+[Environment]::SetEnvironmentVariable('VIDEO_FACTORY_HOME', (Get-Location).Path, 'User')
+```
+
+On macOS/Linux add `export VIDEO_FACTORY_HOME="<path to the checkout>"` to the
+shell profile. Restart the agent afterwards so it sees the variable. Sign in to your
+own providers (see "Accounts and maintenance"); credentials never go into Git.
+
+**2. Keep it current.** `git pull`, then rerun the setup when `skills.lock.json`,
+`package-lock.json` or the requirements changed. Everyone works from the same pins.
+
+**3. Use it in a project.** In Claude Code, register the marketplace once (from
+GitHub, or from your checkout as in "Producing for another project") and enable the
+plugin in each project that makes videos:
+
+```powershell
+claude plugin marketplace add DegenSoftwareDesigns/video-factory
+cd "<path to the project>"
+claude plugin install video-factory@video-factory --scope project --config "workshop=$env:VIDEO_FACTORY_HOME"
+```
+
+A project shared through Git can declare the plugin in its committed
+`.claude/settings.json`, so Claude Code offers it to whoever opens the project and
+only asks for their workshop folder:
+
+```json
+{
+  "extraKnownMarketplaces": {
+    "video-factory": {
+      "source": { "source": "github", "repo": "DegenSoftwareDesigns/video-factory" }
+    }
+  },
+  "enabledPlugins": { "video-factory@video-factory": true }
+}
+```
+
+For Codex, add the `AGENTS.md` section from `docs/client-projects.md` ("Codex and
+other agents") to the project. It finds the workshop through `VIDEO_FACTORY_HOME`.
+
+**What travels with a project.** Its `video-factory.json` uses paths relative to
+the project, so it works on any machine. Aliases in `projects.local.json`, each
+person's `videos.csv` learning log and the `.work/` board files stay on that
+machine.
+
 ## Accounts and maintenance
 
 Each person signs in to their own providers. For HeyGen, use its CLI and

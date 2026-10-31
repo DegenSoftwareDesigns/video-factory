@@ -10,9 +10,10 @@ workshop folder `WORKSHOP` = `${user_config.workshop}`. The work belongs to the 
 project**: every plan, reference, keyframe, clip, audio file, edit and deliverable goes
 into the project's folders, never into the workshop. Match the user's language in conversation.
 
-If `WORKSHOP` above still reads as a literal `${user_config...}` placeholder, take the
-path from `pluginConfigs` → `video-factory@video-factory` → `options.workshop` in
-`~/.claude/settings.json`, or ask the user for it.
+If `WORKSHOP` above still reads as a literal `${user_config...}` placeholder (or this
+skill was opened from a project's `AGENTS.md`), use the `VIDEO_FACTORY_HOME` environment
+variable, then `pluginConfigs` → `video-factory@video-factory` → `options.workshop` in
+`~/.claude/settings.json`; otherwise ask the user for it.
 
 ## Start
 

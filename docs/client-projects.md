@@ -88,9 +88,27 @@ workshop's `.venv`, set `PYTHONUTF8=1`, and set
 ### Codex and other agents
 
 Claude Code plugins do not load in Codex. Give the project a short `AGENTS.md`
-that points to `plugin/skills/video-factory/SKILL.md` with the workshop path, the
-Codex skills in `.agents/skills/`, and the `bin/*.cmd` commands; Codex reads it
-whenever it opens the project. See the Stogie integration for an example.
+that points to the entry skill, the Codex skills in `.agents/skills/`, and the
+`bin/` commands; Codex reads it whenever it opens the project. Name the workshop
+through the `VIDEO_FACTORY_HOME` environment variable, never a fixed path, so the
+same file works on every teammate's machine (README, "For the team"):
+
+```markdown
+## Video work
+
+For any video, storyboard, keyframes, clips, music or edit, use the video-factory
+workshop for instructions and tools, never as storage. WORKSHOP is the folder in the
+`VIDEO_FACTORY_HOME` environment variable; if it is empty, ask the user for the path.
+
+1. Read `WORKSHOP/plugin/skills/video-factory/SKILL.md` and follow it. Workshop skills
+   are in `WORKSHOP/.agents/skills/<skill>/SKILL.md` (Codex) or
+   `WORKSHOP/.claude/skills/<skill>/SKILL.md` (Claude Code).
+2. Run its commands from this folder, which they treat as the client project:
+   `& "$env:VIDEO_FACTORY_HOME\bin\vf.cmd" paths "<production>"` in PowerShell,
+   `"$VIDEO_FACTORY_HOME/bin/vf" paths "<production>"` in Bash. `vf-storyboard`,
+   `vf-melies` and `vf-hyperframes` sit next to it.
+3. Destinations and deliverables come from this project's `video-factory.json`.
+```
 
 ## Commands
 
