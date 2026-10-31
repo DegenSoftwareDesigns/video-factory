@@ -43,7 +43,7 @@ class Base(unittest.TestCase):
     def setUp(self):
         scratch = tempfile.TemporaryDirectory()
         self.addCleanup(scratch.cleanup)
-        self.tmp = Path(scratch.name)
+        self.tmp = Path(scratch.name).resolve()  # long form: Windows runners hand out 8.3 temp paths
         self.workshop = self.tmp / "workshop"
         self.workshop.mkdir()
         patches = [
