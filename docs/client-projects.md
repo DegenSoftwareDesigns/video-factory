@@ -45,6 +45,7 @@ relative to the manifest.
   "references": ["Brand/Character/turnaround.png", "Brand/References"],   // existing inputs, read-only
   "context": {"brief": "Brand/brief.md", "brand_guide": "Brand/brand-guide.md"},
   "records": {"state": "Brand/campaign.json", "log": "Brand/delivery.md"},  // client-owned records to update
+  "env": ".env",                                   // provider keys for this project (the default)
   "layout": {
     "default": "Videos/Storyboard/{production}",    // every role not listed below
     "clips": "Videos/Production/{production}/clips",
@@ -79,11 +80,43 @@ which reads this workshop's guide and skills and runs the `bin/` commands:
 | `vf-storyboard` | the storyboard skill's `storyboard.py` |
 | `vf-melies` | the storyboard skill's `melies.py` |
 | `vf-hyperframes` | the pinned HyperFrames CLI |
+| `vf-run` | any command, with the project's provider keys (`scripts/run.py`) |
 
 Each has a `.cmd` twin for PowerShell and cmd (`vf.cmd`, ...). They use the
 workshop's `.venv`, set `PYTHONUTF8=1`, and set
 `VIDEO_FACTORY_PROJECT` to the open folder unless it is the workshop itself, so
 `--project` becomes optional. Explicit flags still win.
+
+### Provider keys and spending per project
+
+Each project keeps its own provider keys (ElevenLabs, OpenAI, Gemini, Groq, Kling and
+other API keys) in a `.env` at its root, or the file named by the manifest's `env`.
+Each project's usage is then billed to, and can be counted on, its own accounts. Keep
+that file out of the project's Git (`.env` in its `.gitignore`) and copy key names, not
+values, into a `.env.example` if the project is shared.
+
+Run every tool or script that needs a key through `vf-run`:
+
+```powershell
+& "$env:VIDEO_FACTORY_HOME\bin\vf-run.cmd" --list      # the .env used and its key names, never values
+& "$env:VIDEO_FACTORY_HOME\bin\vf-run.cmd" -- python "$env:VIDEO_FACTORY_HOME\.claude\skills\video-use\helpers\transcribe.py" clip.mp4
+```
+
+`vf-run` overrides the inherited environment with the project's keys and warns when the
+project has no `.env`. Standalone work uses the workshop's own `.env` the same way.
+Some skills prefer a key file inside their own folder (`video-use` reads its
+`.claude/skills/video-use/.env` before the environment), so leave those files without
+keys, or the project would be billed to whoever owns that file.
+
+Generations through tools connected to the agent session (Higgsfield, HeyGen or
+ElevenLabs connectors) are billed to the account signed in there and cannot read a
+project `.env`. Log each one, with model, quantity and cost, in the project's `records`
+(for example an `api_usage` CSV). That log plus the provider dashboards for each
+project's keys give the spending per project.
+
+When a provider is reachable both ways (its key in the project's `.env` and its
+connector in the agent session), the agent asks which route to use together with the
+cost approval for the batch; with only one route it names that one.
 
 ### Codex and other agents
 
@@ -106,8 +139,10 @@ workshop for instructions and tools, never as storage. WORKSHOP is the folder in
 2. Run its commands from this folder, which they treat as the client project:
    `& "$env:VIDEO_FACTORY_HOME\bin\vf.cmd" paths "<production>"` in PowerShell,
    `"$VIDEO_FACTORY_HOME/bin/vf" paths "<production>"` in Bash. `vf-storyboard`,
-   `vf-melies` and `vf-hyperframes` sit next to it.
+   `vf-melies`, `vf-hyperframes` and `vf-run` sit next to it.
 3. Destinations and deliverables come from this project's `video-factory.json`.
+4. Provider keys live in this project's `.env`. Run keyed tools through `vf-run` and
+   log every paid generation, with its cost, in this project's usage record.
 ```
 
 ## Commands
@@ -147,4 +182,5 @@ final folder has no result.
    inputs; do not regenerate an identity that already exists.
 3. Write each output to its role folder with the deliverable's naming pattern.
 4. Record approvals, costs and decisions in the client's `records`, in the client's format.
+   Run keyed tools through `vf-run` so they use the client's own `.env`.
 5. Run `check` before reporting a stage as finished.

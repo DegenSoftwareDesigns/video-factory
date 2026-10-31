@@ -246,9 +246,11 @@ Each person signs in to their own providers. For HeyGen, use its CLI and
 variables locally. Other connections and credentials are covered in `GUIDE.md`
 and the relevant skill.
 
-The root `.env.example` is a reference: the workshop does not load that file
-automatically. Export variables into the agent's process or follow the provider's
-authentication mechanism.
+API keys go in the `.env` of the project the work is for, so spending can be counted
+per project; standalone work uses this workshop's `.env` (start from `.env.example`).
+Neither file loads by itself: run keyed tools through `bin/vf-run` (`vf-run.cmd` in
+PowerShell), which loads the right file and lists key names with `--list`. See
+"Provider keys and spending per project" in `docs/client-projects.md`.
 
 ```powershell
 python scripts/skills.py status --target both

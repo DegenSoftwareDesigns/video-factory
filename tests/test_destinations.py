@@ -20,6 +20,9 @@ import workspace  # noqa: E402
 spec = importlib.util.spec_from_file_location("storyboard", ROOT / ".claude/skills/storyboard/scripts/storyboard.py")
 storyboard = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(storyboard)
+runner_spec = importlib.util.spec_from_file_location("run", ROOT / "scripts/run.py")
+runner = importlib.util.module_from_spec(runner_spec)
+runner_spec.loader.exec_module(runner)
 
 
 def png(path, width, height):
@@ -109,7 +112,7 @@ class DestinationTests(Base):
         files = [p for p in plugin_dir.rglob("*") if p.is_file()]
         self.assertEqual(len(files), 2)  # copied into each user's plugin cache: keep it tiny
         entry = (plugin_dir / "skills/video-factory/SKILL.md").read_text(encoding="utf-8")
-        for command in ("bin/vf", "bin/vf-storyboard", "bin/vf-melies", "bin/vf-hyperframes"):
+        for command in ("bin/vf", "bin/vf-storyboard", "bin/vf-melies", "bin/vf-hyperframes", "bin/vf-run"):
             self.assertIn(command, entry)
             self.assertTrue((ROOT / command).is_file())
 
@@ -252,6 +255,33 @@ class CleanupTests(Base):
         self.assertFalse(any(p.exists() for p in gone))
         self.assertFalse((self.client / "Videos/Production/intro/edit").exists())
         self.assertEqual([p.name for p in production.work.iterdir()], ["storyboard.json"])
+
+
+class ProviderKeyTests(Base):
+    def test_keys_come_from_the_project_that_pays(self):
+        self.assertEqual(workspace.env_file(None), self.workshop / ".env")
+        self.assertEqual(workspace.env_file(str(self.client)), self.client / ".env")  # manifest root, not Docs/
+        self.manifest["env"] = "Docs/keys.env"
+        (self.client / "Docs/video-factory.json").write_text(json.dumps(self.manifest), encoding="utf-8")
+        self.assertEqual(workspace.env_file(str(self.client)), self.client / "Docs/keys.env")
+
+    def test_env_parsing_skips_comments_blanks_and_quotes(self):
+        path = self.client / ".env"
+        path.write_text('# keys\nexport A_KEY="one"\nB_KEY = two\nEMPTY_KEY=\nC_KEY=\'x=y\'\nnot a pair\n', encoding="utf-8")
+        self.assertEqual(workspace.read_env(path), {"A_KEY": "one", "B_KEY": "two", "C_KEY": "x=y"})
+
+    def test_run_lists_names_only_and_overrides_the_inherited_key(self):
+        (self.client / ".env").write_text("VF_TEST_KEY=project-secret\n", encoding="utf-8")
+        output = io.StringIO()
+        with contextlib.redirect_stdout(output):
+            self.assertEqual(runner.main(["--project", str(self.client), "--list"]), 0)
+        self.assertIn("VF_TEST_KEY", output.getvalue())
+        self.assertNotIn("project-secret", output.getvalue())
+        seen = self.tmp / "seen.txt"
+        child = f"import os, pathlib; pathlib.Path({str(seen)!r}).write_text(os.environ['VF_TEST_KEY'])"
+        with mock.patch.dict(runner.os.environ, {"VF_TEST_KEY": "personal"}):
+            code = runner.main(["--project", str(self.client), "--", sys.executable, "-c", child])
+        self.assertEqual((code, seen.read_text()), (0, "project-secret"))
 
 
 if __name__ == "__main__":

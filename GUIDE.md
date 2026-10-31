@@ -221,6 +221,15 @@ current production storyboards remain local in `videos/`.
 | `motion-broll`, `explainer-*` | Install Playwright and Chromium on first use |
 | `object-separation` | Downloads SAM2 on first use; CPU processing is slow. Choose CUDA and model size for the machine's GPU. |
 
+API keys live in the `.env` of the project the work is for, so each project's spending
+can be counted; standalone work uses the workshop's `.env`. Run keyed tools through
+`bin/vf-run` (or `vf-run.cmd`), which loads that file, and keep skill-local `.env` files
+such as `video-use`'s free of keys so they do not take precedence. Connector
+generations are billed to the signed-in account; log each one with its cost in the
+project's records. When a provider is available both ways, ask the user which route
+to use together with the cost approval. Details: `docs/client-projects.md`, "Provider keys and spending
+per project".
+
 ## Skill sources
 
 | Skills | Repository |

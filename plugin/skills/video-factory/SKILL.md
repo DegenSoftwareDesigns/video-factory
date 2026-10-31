@@ -26,6 +26,8 @@ variable, then `pluginConfigs` → `video-factory@video-factory` → `options.wo
    - `"WORKSHOP/bin/vf-storyboard"` = the storyboard board builder (`init`, `build`)
    - `"WORKSHOP/bin/vf-melies"` = Melies technique lookup (`search`, `list`, `shot ... --prompt`)
    - `"WORKSHOP/bin/vf-hyperframes"` = the workshop's pinned HyperFrames CLI
+   - `"WORKSHOP/bin/vf-run" <command>` = runs any tool with the provider keys from the
+     project's `.env` (`vf-run --list` shows key names only, never values)
 
    These are Bash scripts. In PowerShell or cmd use the same names with `.cmd`
    (`& "WORKSHOPinf.cmd" paths <name>`).
@@ -57,6 +59,17 @@ Within a track, its skill's phases and STOP gates apply. Folder names those skil
 
 - Before any paid image, clip, music or voice generation, state quantity, model and estimated
   cost and wait for an explicit OK. Record approvals and costs in the project's `records`.
+- Provider keys belong to the project so its spending can be counted: run every keyed tool or
+  script (transcription, TTS, generation APIs) through `vf-run`, which loads the project's `.env`
+  over the inherited environment. If `vf-run --list` lacks a key the step needs, ask the user to
+  add it to the project's `.env`; never borrow the workshop's or a skill's own `.env`, and never
+  print key values. Generations through connected session tools (MCP connectors) are billed to
+  the account signed in there, so log each one, with its cost, in the project's `records`.
+- Choose the route per provider before each paid batch. When both exist (the key in the
+  project's `.env` and a connected tool for the same provider), ask the user which to use in the
+  same message as the cost approval: API (billed to the project's key) or connector (billed to
+  their signed-in account). With only one available, name it in that message. Keep the choice
+  for the rest of the batch.
 - Do not install dependencies, clone repositories or copy skills into the project; the workshop
   owns them. Write nothing in the workshop except through `vf` (its learning log and `.work/`).
 - Run `vf check <name>` before reporting a stage complete.

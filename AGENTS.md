@@ -76,5 +76,11 @@ For installation and dependency updates, read `README.md` and `docs/skills.md`.
   and execution instructions. Follow `examples/README.md`.
 - Store credentials only in ignored `.env` files or provider authentication.
   Publish placeholders in `.env.example`; never print actual secret values.
+- Provider keys belong to whoever the work is for, so spending is counted per project:
+  a client project's own `.env` (manifest `env`), the workshop's `.env` for standalone
+  work. Run keyed tools through `bin/vf-run`, which loads that file over the inherited
+  environment, and log connector generations and their cost in the project's records.
+  When a provider is available both through its key and a connected tool, ask the user
+  which route to use together with the cost approval.
 - Before a commit intended for sharing, run
   `python scripts/doctor.py --publication` and inspect the Git inventory.

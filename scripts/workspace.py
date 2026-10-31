@@ -162,6 +162,35 @@ def load_project(project):
     return (location.parent / manifest.get("root", ".")).resolve(), manifest, location.resolve()
 
 
+def env_file(project=None):
+    """The .env holding the provider keys that pay for the work.
+
+    A client project's own file (manifest "env", default .env at the project root), so usage is
+    billed and counted per project; the workshop's .env for standalone productions.
+    """
+    if not project:
+        return ROOT / ".env"
+    root, manifest, _ = load_project(project)
+    return root / manifest.get("env", ".env")
+
+
+def read_env(path):
+    """KEY=VALUE pairs of a .env file; comments, blank values and surrounding quotes are dropped."""
+    values = {}
+    for line in Path(path).read_text(encoding="utf-8-sig").splitlines():
+        line = line.strip()
+        if line.startswith("export "):
+            line = line[len("export "):].lstrip()
+        if not line or line.startswith("#") or "=" not in line:
+            continue
+        key, value = (part.strip() for part in line.split("=", 1))
+        if len(value) >= 2 and value[0] == value[-1] and value[0] in "\"'":
+            value = value[1:-1]
+        if key and value:
+            values[key] = value
+    return values
+
+
 def client(project, name, overrides=None):
     root, manifest, manifest_path = load_project(project)
     slug = slugify(manifest.get("slug") or manifest.get("name") or root.name)
