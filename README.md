@@ -121,11 +121,29 @@ than substituting `npx ...@latest`. Each production can pin its own CLI version.
 Existing CLI flags, stored values, and production folder names retain their
 original spelling for compatibility.
 
+## Producing for another project
+
+The workshop can also serve a project that keeps its own folders, such as a
+campaign with an established brand kit. Dependencies stay here; the client project
+keeps its references, records and deliverables. Add a `video-factory.json` to the
+client project describing its folders and deliverables, then pass it explicitly:
+
+```powershell
+python scripts/videos.py new "intro" --project "F:\Client" --tipo ia-storyboard --formato 16:9
+python scripts/videos.py paths client/intro
+python scripts/videos.py check client/intro --stage planning --shots 8
+```
+
+One-off destinations can be given with `--out`, `--role ROLE=PATH`, `--refs` and
+`--deliverables`, and the user's instructions always win over the manifest. Short
+aliases for client folders go in the ignored `projects.local.json`. The manifest
+format, precedence and an agent checklist are in `docs/client-projects.md`.
+
 ## What is shared
 
 | In Git | Local to each machine |
 |---|---|
-| Instructions, scripts, and our own `storyboard` skill | `videos/` and `videos.csv` |
+| Instructions, scripts, and our own `storyboard` skill | `videos/`, `videos.csv`, `.work/` and `projects.local.json` |
 | External skill commits and hashes | Installed external skills and `vendor/` clones |
 | Node configuration and lockfile | `.venv/`, `node_modules/`, models, and caches |
 | Lightweight brand kit and future productions in `examples/` | Personal/client brands and production media |

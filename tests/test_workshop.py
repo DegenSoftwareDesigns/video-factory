@@ -118,6 +118,7 @@ class PublicationTests(unittest.TestCase):
                  "marca-army/design.md", "marca-oscar-twitter/data.json", ".env", "nested/.env.production",
                  ".claude/launch.json", ".claude/skills/clipify/SKILL.md", ".agents/skills/clipify/SKILL.md",
                  ".claude/skills/storyboard/.cache/technical.json", "examples/demo/renders/final.mp4",
+                 ".work/client/intro/storyboard.json", "projects.local.json",
                  ".claude/skills/storyboard/SKILL.md", "examples/demo/reference.webp", "examples/demo/index.html",
                  ".env.example", "nested/.env.example"]
         for relative in paths:

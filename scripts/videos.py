@@ -1,42 +1,41 @@
 #!/usr/bin/env python3
 """Video folders and the videos.csv learning log.
 
-Every video lives in videos/<YYYY-MM-DD>_<name>/ with numbered subfolders, and has one row in
-videos.csv (project root). The CSV uses ';' and UTF-8 with BOM so it opens cleanly in Excel.
+Standalone (default): every video lives in videos/<YYYY-MM-DD>_<name>/ with numbered subfolders.
+Client project: --project points to a project that keeps its own folders, references and
+deliverables (see docs/client-projects.md and scripts/workspace.py). Either way the production has
+one row in videos.csv (project root). The CSV uses ';' and UTF-8 with BOM so it opens cleanly in Excel.
 
 Usage:
-  videos.py new "<name>" [--tipo T] [--intencion "..."] [--formato 9:16]
+  videos.py new "<name>" [--tipo T] [--intencion "..."] [--formato 9:16] [destination]
   videos.py list
   videos.py show <id>
+  videos.py paths <id> [destination]   # JSON: role folders, references, records, deliverables
+  videos.py check <id> [--stage S] [--shots N] [destination]   # deliverables present on disk
   videos.py update <id> [--estado E] [--nota N] [--intencion ...] [--formato ...] [--duracion S]
                         [--herramientas ...] [--funciono ...] [--mejorar ...] [--tipo ...]
   videos.py learnings [--tipo T]       # past notes to read before starting a new video
-  videos.py clean <id> [--yes]         # dry run unless --yes: keeps only final/
+  videos.py clean <id> [--yes] [--keep PATH] [--drop FILE] [destination]   # dry run unless --yes; keeps the final video,
+                                       # deliverables, final-version images/clips, storyboard.json
 
-<id> can be the full folder name or any unique part of it.
+destination: --project P [--out DIR] [--role ROLE=PATH] [--refs PATH] [--deliverables FILE];
+standalone new accepts --out DIR instead of videos/.
+<id> can be the full id or any unique part of it; client productions use <project>/<name>.
 """
 import argparse
 import csv
 import datetime
-import re
-import shutil
+import json
 import sys
-import unicodedata
-from pathlib import Path
 
-ROOT = Path(__file__).resolve().parent.parent
-VIDEOS = ROOT / "videos"
+import workspace
+from workspace import ROOT, VIDEOS, slugify  # noqa: F401  (slugify stays importable from here)
+
 CSV_PATH = ROOT / "videos.csv"
 FIELDS = ["id", "fecha", "nombre", "tipo", "intencion", "formato", "duracion_s", "herramientas",
-          "estado", "nota", "que_funciono", "que_mejorar", "carpeta"]
-SUBFOLDERS = ["00_plan", "01_referencias", "02_keyframes", "03_clips", "04_audio", "05_montaje", "final"]
+          "estado", "nota", "que_funciono", "que_mejorar", "carpeta", "proyecto"]
 ESTADOS = ["en-curso", "terminado", "descartado", "limpiado"]
 TIPOS = ["ia-storyboard", "edicion", "shorts", "explainer", "motion-graphics", "otro"]
-
-
-def slugify(text):
-    text = unicodedata.normalize("NFKD", text).encode("ascii", "ignore").decode()
-    return re.sub(r"[^a-z0-9]+", "-", text.lower()).strip("-")[:60]
 
 
 def read_rows():
@@ -53,11 +52,58 @@ def write_rows(rows):
         writer.writerows(rows)
 
 
+def matching(rows, key):
+    return [r for r in rows if r["id"] == key] or [r for r in rows if key in r["id"]]
+
+
 def find(rows, key):
-    matches = [r for r in rows if r["id"] == key] or [r for r in rows if key in r["id"]]
+    matches = matching(rows, key)
     if len(matches) != 1:
         sys.exit(f"'{key}' coincide con {len(matches)} vídeos: {[r['id'] for r in matches]}")
     return matches[0]
+
+
+def folder_of(row):
+    return ROOT / row["carpeta"] if row.get("carpeta") else VIDEOS / row["id"]
+
+
+def display(path):
+    """Path relative to the workshop when inside it, absolute otherwise."""
+    try:
+        return path.relative_to(ROOT).as_posix()
+    except ValueError:
+        return str(path)
+
+
+def destination_overrides(args):
+    overrides = workspace.overrides_from(args)
+    if not args.project and set(overrides) - {"out"}:
+        sys.exit("--role, --refs y --deliverables requieren --project.")
+    return overrides
+
+
+def open_production(args, key):
+    """Resolve a production from explicit destination flags, its videos.csv row or videos/."""
+    try:
+        overrides = destination_overrides(args)
+        if args.project:
+            return workspace.client(args.project, key, overrides)
+        matches = matching(read_rows(), key)
+        if len(matches) > 1:
+            sys.exit(f"'{key}' coincide con {len(matches)} vídeos: {[r['id'] for r in matches]}")
+        if matches:
+            row = matches[0]
+            if row.get("proyecto"):
+                return workspace.client(row["proyecto"], row["id"].split("/", 1)[-1])
+            return workspace.standalone(row["id"], folder_of(row))
+        folders = [p for p in VIDEOS.glob("*") if p.is_dir() and key in p.name]
+        folders = [p for p in folders if p.name == key] or folders
+        if len(folders) != 1:
+            sys.exit(f"'{key}' coincide con {len(folders)} carpetas en videos/: {[p.name for p in folders]}. "
+                     f"Crea el vídeo con scripts/videos.py new \"<nombre>\" o indica --project.")
+        return workspace.standalone(folders[0].name, folders[0])
+    except workspace.WorkspaceError as exc:
+        sys.exit(str(exc))
 
 
 def folder_size(path):
@@ -73,21 +119,34 @@ def human(n):
 
 
 def cmd_new(a):
-    slug = slugify(a.nombre)
-    if not slug:
-        sys.exit("El nombre no puede quedar vacío.")
-    today = datetime.date.today().isoformat()
-    vid = f"{today}_{slug}"
-    folder = VIDEOS / vid
-    if folder.exists():
-        sys.exit(f"Ya existe: {folder}")
-    for sub in SUBFOLDERS:
-        (folder / sub).mkdir(parents=True)
     rows = read_rows()
-    rows.append({"id": vid, "fecha": today, "nombre": a.nombre, "tipo": a.tipo, "intencion": a.intencion,
-                 "formato": a.formato, "estado": "en-curso", "carpeta": f"videos/{vid}"})
+    try:
+        overrides = destination_overrides(a)
+        if a.project:
+            prod = workspace.client(a.project, a.nombre, overrides)
+        else:
+            prod = workspace.standalone_new(a.nombre, overrides.get("out"))
+    except workspace.WorkspaceError as exc:
+        sys.exit(str(exc))
+    if any(r["id"] == prod.id for r in rows):
+        sys.exit(f"Ya existe en videos.csv: {prod.id}")
+    if prod.mode == "standalone":
+        if prod.base.exists():
+            sys.exit(f"Ya existe: {prod.base}")
+        for folder in prod.dirs.values():
+            folder.mkdir(parents=True)
+        carpeta, proyecto = display(prod.base), ""
+    else:
+        # The client owns its folders: only the plan folder and the workshop's working folder are created.
+        prod.dirs["plan"].mkdir(parents=True, exist_ok=True)
+        prod.work.mkdir(parents=True, exist_ok=True)
+        prod.save_overrides()
+        carpeta, proyecto = str(prod.dirs["plan"]), str(prod.manifest or prod.base)
+    today = datetime.date.today().isoformat()
+    rows.append({"id": prod.id, "fecha": today, "nombre": a.nombre, "tipo": a.tipo, "intencion": a.intencion,
+                 "formato": a.formato, "estado": "en-curso", "carpeta": carpeta, "proyecto": proyecto})
     write_rows(rows)
-    print(vid)
+    print(prod.id)
 
 
 def cmd_list(a):
@@ -96,7 +155,7 @@ def cmd_list(a):
         print("Sin vídeos todavía.")
         return
     for r in rows:
-        folder = VIDEOS / r["id"]
+        folder = folder_of(r)
         size = human(folder_size(folder)) if folder.exists() else "-"
         nota = f"nota {r['nota']}" if r.get("nota") else "sin nota"
         print(f"{r['id']}\t{r['estado']}\t{r['tipo'] or '-'}\t{nota}\t{size}")
@@ -105,11 +164,31 @@ def cmd_list(a):
 def cmd_show(a):
     r = find(read_rows(), a.id)
     for k in FIELDS:
-        print(f"{k}: {r.get(k, '')}")
-    folder = VIDEOS / r["id"]
-    if folder.exists():
+        print(f"{k}: {r.get(k) or ''}")
+    folder = folder_of(r)
+    if folder.exists() and not r.get("proyecto"):
         for sub in sorted(p for p in folder.iterdir() if p.is_dir()):
             print(f"  {sub.name}/ {human(folder_size(sub))}")
+
+
+def cmd_paths(a):
+    print(json.dumps(open_production(a, a.id).describe(), ensure_ascii=False, indent=2))
+
+
+def cmd_check(a):
+    prod = open_production(a, a.id)
+    try:
+        report = workspace.check(prod, a.stage, a.shots)
+    except workspace.WorkspaceError as exc:
+        sys.exit(str(exc))
+    if not report:
+        print(f"{prod.id}: sin entregables declarados.")
+        return 0
+    for status, message in report:
+        print(f"{status:8} {message}")
+    problems = sum(status in ("MISSING", "EXTRA", "SIZE") for status, _ in report)
+    print(f"{prod.id}: {'completo' if not problems else f'{problems} pendiente(s)'}")
+    return int(bool(problems))
 
 
 def cmd_update(a):
@@ -123,6 +202,12 @@ def cmd_update(a):
             r[k] = v
     write_rows(rows)
     print(f"Actualizado {r['id']}")
+    if a.estado == "terminado":
+        # Finished productions do not keep working files: show the cleanup for the user's approval.
+        print()
+        print("Limpieza pendiente (simulación):")
+        if cleanup_report(open_production(a, r["id"])) is not None:
+            print(f"Tras la aprobación del usuario: videos.py clean {r['id']} --yes")
 
 
 def cmd_learnings(a):
@@ -140,34 +225,74 @@ def cmd_learnings(a):
             print(f"    mejorar: {r['que_mejorar']}")
 
 
+VIDEO_SUFFIXES = {".mp4", ".mov", ".webm", ".mkv"}
+
+
+def cleanup_report(prod, extra=(), drop=()):
+    """Print what cleanup keeps and removes. Returns the files to remove, or None when unsafe."""
+    final = prod.dirs["final"]
+    declared = "final" in prod.deliverables
+    finished = (not any(s == "MISSING" for s, _ in workspace.check(prod, "final")) if declared
+                else final.is_dir() and any(p.is_file() for p in final.iterdir()))
+    if not finished:
+        print(f"{final} no tiene el resultado final: no hay nada que conservar, no limpio nada.")
+        return None
+    remove, kept, notes = workspace.cleanup_plan(prod, extra)
+    # Final videos stay unless named with --drop: older versions and heavy masters.
+    dropped = {p.resolve() for p in drop}
+    kept = [p for p in kept if p.resolve() not in dropped]
+    remove = sorted(set(remove) | set(drop))
+    finals = [p for p in kept if within_final(prod, p) and p.suffix.lower() in VIDEO_SUFFIXES]
+    if len(finals) > 1:
+        notes.append(f"final has {len(finals)} videos; keep only the latest light version per format "
+                     "and name older versions and masters with --drop")
+    print(f"Se conserva ({human(sum(p.stat().st_size for p in kept))}): vídeo final, entregables, "
+          f"imágenes y clips de la versión final, storyboard.json")
+    for p in kept:
+        print(f"  = {display(p)}")
+    for note in notes:
+        print(f"AVISO: {note}")
+    by_folder = {}
+    for p in remove:  # grouped by the first folder level inside each folder the production owns
+        root = next(r for r in prod.owned if p == r or r in p.parents)
+        rel = p.relative_to(root).parts
+        by_folder.setdefault(root / rel[0] if len(rel) > 1 else root, []).append(p)
+    for folder, files in sorted(by_folder.items()):
+        size = human(sum(f.stat().st_size for f in files))
+        names = ", ".join(f.name for f in files[:6]) + (f" y {len(files) - 6} más" if len(files) > 6 else "")
+        print(f"Se borra:    {display(folder)}/ {len(files)} archivo(s), {size}: {names}")
+    print(f"Espacio liberado: {human(sum(p.stat().st_size for p in remove))}")
+    return remove
+
+
+def within_final(prod, path):
+    final = prod.dirs["final"].resolve()
+    return final in path.resolve().parents
+
+
 def cmd_clean(a):
     rows = read_rows()
-    r = find(rows, a.id)
-    folder = VIDEOS / r["id"]
-    final = folder / "final"
-    if not final.exists() or not any(final.iterdir()):
-        sys.exit(f"{final} está vacía: no hay resultado que conservar, no limpio nada.")
-    # The plan is a few KB and records the decisions, so it is kept next to the result.
-    plan = folder / "00_plan" / "storyboard.json"
-    targets = [p for p in folder.iterdir() if p.name != "final"]
-    freed = sum(folder_size(p) if p.is_dir() else p.stat().st_size for p in targets)
-    print(f"Se conserva: final/ ({human(folder_size(final))})" + (" + storyboard.json" if plan.exists() else ""))
-    for p in targets:
-        print(f"Se borra:    {p.name}{'/' if p.is_dir() else ''} ({human(folder_size(p) if p.is_dir() else p.stat().st_size)})")
-    print(f"Espacio liberado: {human(freed)}")
+    prod = open_production(a, a.id)
+    extra = [prod.base / k for k in a.keep]
+    drop = [prod.base / d for d in a.drop]
+    missing = [str(k) for k in extra if not k.exists()] + [str(d) for d in drop if not d.is_file()]
+    if missing:
+        sys.exit(f"--keep/--drop no existe: {missing}")
+    remove = cleanup_report(prod, extra, drop)
+    if remove is None:
+        return 1
     if not a.yes:
         print("Simulación. Repite con --yes para borrar.")
         return
-    if plan.exists():
-        shutil.copy2(plan, final / "storyboard.json")
-    for p in targets:
-        shutil.rmtree(p) if p.is_dir() else p.unlink()
-    r["estado"] = "limpiado"
+    workspace.apply_cleanup(prod, remove)
+    for r in rows:
+        if r["id"] == prod.id:
+            r["estado"] = "limpiado"
     write_rows(rows)
     print("Limpieza hecha.")
 
 
-def main():
+def main(argv=None):
     p = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     sub = p.add_subparsers(dest="cmd", required=True)
     n = sub.add_parser("new")
@@ -175,11 +300,21 @@ def main():
     n.add_argument("--tipo", default="", choices=TIPOS + [""])
     n.add_argument("--intencion", default="")
     n.add_argument("--formato", default="")
+    workspace.add_arguments(n)
     sub.add_parser("list")
     s = sub.add_parser("show")
     s.add_argument("id")
+    pa = sub.add_parser("paths")
+    pa.add_argument("id")
+    workspace.add_arguments(pa)
+    ch = sub.add_parser("check")
+    ch.add_argument("id")
+    ch.add_argument("--stage", help="deliverable stage to check, e.g. planning or final")
+    ch.add_argument("--shots", type=int, help="number of shots, for per-shot deliverables")
+    workspace.add_arguments(ch)
     u = sub.add_parser("update")
     u.add_argument("id")
+    workspace.add_arguments(u)
     u.add_argument("--estado", choices=ESTADOS)
     u.add_argument("--nota", type=lambda v: str(max(1, min(10, int(v)))))
     u.add_argument("--tipo", choices=TIPOS)
@@ -190,10 +325,15 @@ def main():
     c = sub.add_parser("clean")
     c.add_argument("id")
     c.add_argument("--yes", action="store_true")
-    a = p.parse_args()
-    {"new": cmd_new, "list": cmd_list, "show": cmd_show, "update": cmd_update,
-     "learnings": cmd_learnings, "clean": cmd_clean}[a.cmd](a)
+    c.add_argument("--keep", action="append", default=[], metavar="PATH",
+                   help="another final-version file or folder to keep, relative to the production base")
+    c.add_argument("--drop", action="append", default=[], metavar="FILE",
+                   help="a superseded final version or heavy master to remove, relative to the production base")
+    workspace.add_arguments(c)
+    a = p.parse_args(argv)
+    return {"new": cmd_new, "list": cmd_list, "show": cmd_show, "paths": cmd_paths, "check": cmd_check,
+            "update": cmd_update, "learnings": cmd_learnings, "clean": cmd_clean}[a.cmd](a) or 0
 
 
 if __name__ == "__main__":
-    main()
+    sys.exit(main())

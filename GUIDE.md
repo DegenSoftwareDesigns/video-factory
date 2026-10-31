@@ -38,32 +38,57 @@ with minimal media.
 | Generate AI clips from text or images | Higgsfield MCP + `kling-ai` prompts + Melies technique | "Make a five-second night-city shot with a dolly zoom" |
 | Evaluate a new skill or tool | "Evaluating a new skill" recipe | "Review this tool and tell me whether it is useful" |
 | Review lessons from earlier videos | `scripts/videos.py learnings` | "What did we learn from our latest videos?" |
-| Free space from a finished production | `scripts/videos.py clean` | "Clean up the completed coffee video" |
+| Remove working files once a video is finished | `scripts/videos.py clean` | "The coffee video is done" |
 
 (*) Not included in the pinned set. If `product-launch-video` or `pr-to-video`
 is needed, add it to the lockfile from the reviewed HyperFrames commit and follow
 `docs/skills.md`, so everyone uses the same version.
 
-## Production folders and learning log
+## Production destinations and learning log
 
-Every video lives in `videos/<YYYY-MM-DD>_<name>/`, regardless of workflow.
-Choose its name at the start. Existing folder names are retained for compatibility.
+The workflows below name **roles**, not fixed folders. `python scripts/videos.py
+paths <id>` prints where each role lives for a production; every workflow and
+specialist writes there.
 
-| Subdirectory | Contents |
-|---|---|
-| `00_plan/` | Storyboard and planning notes |
-| `01_referencias/` | Character, product, or location references |
-| `02_keyframes/` | Keyframe images for each shot |
-| `03_clips/` | Generated or trimmed shot clips |
-| `04_audio/` | Music, voiceover, and effects |
-| `05_montaje/` | Assembly project and intermediate renders |
-| `final/` | Deliverables; retained during cleanup with a copy of `storyboard.json` |
+- **Standalone (default):** every video lives in `videos/<YYYY-MM-DD>_<name>/`,
+  regardless of workflow. Choose its name at the start. Existing folder names are
+  retained for compatibility.
+- **Client project:** `--project <folder|alias>` uses the client's
+  `video-factory.json`: its folders, existing references, records and declared
+  deliverables. Working files such as `storyboard.json` and the HTML board stay in
+  the workshop's `.work/`. The user's organization instructions take precedence over
+  the manifest, which takes precedence over the defaults. See `docs/client-projects.md`.
+
+| Role | Standalone folder | Contents |
+|---|---|---|
+| plan | `00_plan/` | Storyboard and planning notes |
+| references | `01_referencias/` | Character, product, or location references |
+| keyframes | `02_keyframes/` | Keyframe images for each shot |
+| clips | `03_clips/` | Generated or trimmed shot clips |
+| audio | `04_audio/` | Music, voiceover, and effects |
+| assembly | `05_montaje/` | Assembly project and intermediate renders |
+| final | `final/` | Deliverables; always retained during cleanup |
+
+When a client declares deliverables (for example 1-2 storyboard sheets, one FHD
+image per clip and a single prompt TXT), they replace the default planning outputs
+of a workflow: produce exactly those, named as declared, and run
+`videos.py check <id>` before reporting a stage complete. Folder names below, such
+as `04_audio/`, mean the corresponding role.
 
 The root `videos.csv`, viewable in Excel, is the local learning log. Each row
 records a video's name, type, intent, aspect ratio, duration, tools, status, rating
 from 1 to 10, what worked, and what to improve. Fill it in with the user at the
-end of a production and read it before the next one. Cleanup happens only when
-requested, after showing what will be removed and how much space it will free.
+end of a production and read it before the next one. When a video is finished,
+clean it so no junk accumulates: `videos.py update <id> --estado terminado` prints
+what will be removed and how much space it frees, and `videos.py clean <id> --yes`
+runs it after the user's OK. Only the final video, declared deliverables, the
+images and individual clips used in the final version (`--keep` for clips outside
+the storyboard), and `storyboard.json` are kept. `final/` ends with the latest
+light version per format; older versions and heavy masters are named with
+`--drop`. Everything else is an intermediate and is removed: discarded or
+replaced versions, drafts, audio, assembly projects and intermediate renders.
+Client cleanup is limited to the production's
+own folders.
 
 ## Rules for overlapping workflows
 
@@ -133,13 +158,14 @@ requested, after showing what will be removed and how much space it will free.
 
 ### Video with AI-generated shots
 
-Use `storyboard` and keep all files in `videos/<date>_<name>/`.
+Use `storyboard` and keep all files in the production's role folders
+(`videos/<date>_<name>/` when standalone).
 
 1. **Idea:** restate the brief, clarify missing details, suggest a name, and review
    lessons from earlier productions.
 2. **Shots:** propose a sequence using Melies techniques, explaining what appears,
    why each shot belongs, and useful alternatives.
-3. **Storyboard:** show `00_plan/storyboard.html`. Each shot plays its technique
+3. **Storyboard:** show the HTML board printed by `storyboard.py build`. Each shot plays its technique
    reference; sequence playback previews the rhythm, and alternatives can be compared.
    Iterate until approved.
 4. **Music preproduction:** approve a recording, save it with source/licence details
