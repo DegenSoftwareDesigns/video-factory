@@ -146,7 +146,7 @@ class DestinationTests(Base):
     def test_client_production_cli_creates_only_plan(self):
         code, out = run(videos, ["new", "intro", "--project", str(self.client), "--tipo", "ia-storyboard"])
         self.assertEqual(out.strip(), "client/intro")
-        self.assertEqual([p.relative_to(self.client).as_posix() for p in self.client.rglob("*") if p.is_dir()],
+        self.assertEqual(sorted(p.relative_to(self.client).as_posix() for p in self.client.rglob("*") if p.is_dir()),
                          ["Docs", "Videos", "Videos/Storyboard", "Videos/Storyboard/intro"])
         row = videos.read_rows()[0]
         self.assertEqual(Path(row["proyecto"]).name, "video-factory.json")
