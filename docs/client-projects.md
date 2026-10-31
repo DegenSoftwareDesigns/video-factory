@@ -80,9 +80,17 @@ which reads this workshop's guide and skills and runs the `bin/` commands:
 | `vf-melies` | the storyboard skill's `melies.py` |
 | `vf-hyperframes` | the pinned HyperFrames CLI |
 
-They use the workshop's `.venv`, set `PYTHONUTF8=1`, and set
+Each has a `.cmd` twin for PowerShell and cmd (`vf.cmd`, ...). They use the
+workshop's `.venv`, set `PYTHONUTF8=1`, and set
 `VIDEO_FACTORY_PROJECT` to the open folder unless it is the workshop itself, so
 `--project` becomes optional. Explicit flags still win.
+
+### Codex and other agents
+
+Claude Code plugins do not load in Codex. Give the project a short `AGENTS.md`
+that points to `plugin/skills/video-factory/SKILL.md` with the workshop path, the
+Codex skills in `.agents/skills/`, and the `bin/*.cmd` commands; Codex reads it
+whenever it opens the project. See the Stogie integration for an example.
 
 ## Commands
 

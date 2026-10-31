@@ -25,6 +25,9 @@ path from `pluginConfigs` → `video-factory@video-factory` → `options.worksho
    - `"WORKSHOP/bin/vf-storyboard"` = the storyboard board builder (`init`, `build`)
    - `"WORKSHOP/bin/vf-melies"` = Melies technique lookup (`search`, `list`, `shot ... --prompt`)
    - `"WORKSHOP/bin/vf-hyperframes"` = the workshop's pinned HyperFrames CLI
+
+   These are Bash scripts. In PowerShell or cmd use the same names with `.cmd`
+   (`& "WORKSHOPinf.cmd" paths <name>`).
 3. Find the project's destination contract: `video-factory.json` at the project root or one
    folder below it. Without one, propose a small manifest from the project's existing folders
    (format in `WORKSHOP/docs/client-projects.md`), confirm it with the user, and write it where
